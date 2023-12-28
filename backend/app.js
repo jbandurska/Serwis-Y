@@ -3,14 +3,41 @@ import fs from "fs";
 import https from "https";
 import cors from "cors";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import { connectToDatabase } from "./db/dbConnection.js";
+import { configurePassport } from "./config/passport.js";
+import { authRouter } from "./routes/index.js";
 
 dotenv.config();
 const port = process.env.PORT;
-const passphrase = process.env.PASSPHRASE;
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(cookieParser());
+app.use(
+  session({
+    name: "session",
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: true,
+      sameSite: "None",
+    },
+  })
+);
+
+configurePassport(app);
+
+app.use("/", authRouter);
 
 const key = fs.readFileSync("key.pem");
 const cert = fs.readFileSync("cert.pem");
@@ -19,10 +46,12 @@ const server = https.createServer(
   {
     key,
     cert,
-    passphrase,
+    passphrase: process.env.PASSPHRASE,
   },
   app
 );
+
+await connectToDatabase();
 
 server.listen(port, () => {
   console.log(`Listening on https://localhost:${port}`);

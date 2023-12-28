@@ -42,7 +42,11 @@ h1 {
   font-size: 1em;
   background-color: #1a1a1a;
 }
-
+.center-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 input {
   border-radius: 8px;
   padding: 0.6em;
@@ -67,4 +71,11 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

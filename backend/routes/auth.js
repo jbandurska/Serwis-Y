@@ -32,8 +32,12 @@ router.post("/login", (req, res, next) => {
 });
 
 router.post("/logout", (req, res) => {
-  if (req.isAuthenticated()) req.logout();
-  res.json({ message: "Logout successful" });
+  req.logout((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Logout failed", error: err });
+    }
+    return res.json({ message: "Logout successful" });
+  });
 });
 
 router.post("/register", async (req, res) => {

@@ -1,11 +1,22 @@
 <template>
   <header>
     <div class="logo">Y</div>
-    <div class="user">username PHOTO</div>
+    <div class="user">
+      <span>{{ user.login }}</span>
+      <img
+        v-if="user.profilePicture"
+        :src="user.profilePicture"
+        alt="profile picture"
+      />
+    </div>
   </header>
 </template>
 
-<script setup></script>
+<script setup>
+import { userStore } from "../../stores/user.store";
+
+const user = userStore.userInfo.user;
+</script>
 
 <style scoped>
 header {
@@ -14,6 +25,9 @@ header {
   align-items: center;
   background-color: #333;
   padding: 10px 50px;
+  width: 100%;
+  position: fixed;
+  top: 0;
 }
 
 .logo {

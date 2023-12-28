@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 import axios from "axios";
 
 const userInfo = reactive({
@@ -14,14 +14,12 @@ const checkIfAuthenticated = async () => {
   const { isAuthenticated, user } = response.data;
 
   userInfo.isLogged = isAuthenticated;
-  if (user) userInfo.user = user;
+  userInfo.user = user;
 };
 
-const setUserInfo = ({ user }) => {
-  if (user) {
-    userInfo.isLogged = true;
-    userInfo.user = user;
-  }
+const setUserInfo = (user) => {
+  userInfo.isLogged = !!user;
+  userInfo.user = user || {};
 };
 
 export const userStore = {

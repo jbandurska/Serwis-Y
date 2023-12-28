@@ -36,7 +36,7 @@
           type="password"
           v-model="registerData.confirmPassword"
           required
-          placeholder="Repeat password"
+          placeholder="Confirm password"
         />
         <button type="submit">Register</button>
 
@@ -71,7 +71,7 @@ const login = async () => {
     const response = await axios.post("/login", loginData.value, {
       withCredentials: true,
     });
-    userStore.setUserInfo(response.data);
+    userStore.setUserInfo(response.data.user);
   } catch (error) {
     loginMsg.value = error.response.data.message;
     registerMsg.value = "";
@@ -88,7 +88,7 @@ const register = async () => {
     const response = await axios.post("/register", registerData.value, {
       withCredentials: true,
     });
-    userStore.setUserInfo(response.data);
+    userStore.setUserInfo(response.data.user);
   } catch (error) {
     registerMsg.value = error.response.data.message;
     loginMsg.value = "";

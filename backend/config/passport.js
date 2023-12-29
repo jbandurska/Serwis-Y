@@ -27,7 +27,6 @@ const validateUser = async (login, password, done) => {
 };
 
 const serializeUser = (user, done) => {
-  console.log("SERIALIZE", user._id);
   done(null, user._id);
 };
 
@@ -38,8 +37,6 @@ const deserializeUser = async (id, done) => {
     if (!user) {
       return done(null, false);
     }
-
-    console.log("DESERIALIZE", user);
 
     done(null, user);
   } catch (err) {

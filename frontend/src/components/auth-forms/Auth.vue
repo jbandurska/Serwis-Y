@@ -68,7 +68,7 @@ const registerMsg = ref("");
 
 const login = async () => {
   try {
-    const response = await axios.post("/login", loginData.value, {
+    const response = await axios.post("/api/login", loginData.value, {
       withCredentials: true,
     });
     userStore.setUserInfo(response.data.user);
@@ -85,7 +85,7 @@ const register = async () => {
   }
 
   try {
-    const response = await axios.post("/register", registerData.value, {
+    const response = await axios.post("/api/register", registerData.value, {
       withCredentials: true,
     });
     userStore.setUserInfo(response.data.user);
@@ -108,21 +108,5 @@ const register = async () => {
 
 h1 {
   text-align: center;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-
-  input {
-    background-color: #242424;
-    border: 1px solid var(--main);
-    color: inherit;
-  }
-
-  p {
-    text-align: center;
-  }
 }
 </style>

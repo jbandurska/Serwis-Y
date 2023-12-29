@@ -3,13 +3,14 @@ import Header from "./components/header/Header.vue";
 import Auth from "./components/auth-forms/Auth.vue";
 import { userStore } from "./stores/user.store";
 import { watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
 watch(userStore.userInfo, (newInfo) => {
-  if (newInfo.isLogged) {
+  if (newInfo.isLogged && route.path == "/") {
     router.push("/home");
-  } else {
+  } else if (!newInfo.isLogged) {
     router.push("/");
   }
 });

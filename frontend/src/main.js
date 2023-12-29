@@ -7,6 +7,8 @@ import { environment } from "./env";
 
 import Auth from "./components/auth-forms/Auth.vue";
 import HomePage from "./pages/HomePage.vue";
+import UserProfile from "./components/user-profile/UserProfile.vue";
+import Settings from "./components/settings/Settings.vue";
 
 const routes = [
   {
@@ -16,7 +18,16 @@ const routes = [
   {
     path: "/home",
     component: HomePage,
-    children: [],
+    children: [
+      {
+        path: "user/settings",
+        component: Settings,
+      },
+      {
+        path: "user/:id",
+        component: UserProfile,
+      },
+    ],
   },
 ];
 
@@ -26,6 +37,15 @@ const router = createRouter({
 });
 
 axios.defaults.baseURL = environment.backendUrl;
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      router.push("/");
+    }
+    return Promise.reject(error);
+  }
+);
 
 const app = createApp(App);
 app.use(router);

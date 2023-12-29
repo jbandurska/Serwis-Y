@@ -5,7 +5,7 @@ import { userStore } from "../../stores/user.store";
 const logout = async () => {
   try {
     await axios.post(
-      "/logout",
+      "/api/logout",
       {},
       {
         withCredentials: true,

@@ -7,6 +7,21 @@ const router = Router();
 
 router.use(authGuard);
 
+router.get("/search", async (req, res) => {
+  const key = req.query.key;
+
+  try {
+    const users = await User.find({
+      login: { $regex: key, $options: "i" },
+    });
+
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.get("/:userId", async (req, res) => {
   const userId = req.params.userId;
 
@@ -28,6 +43,32 @@ router.get("/:userId", async (req, res) => {
     }
 
     return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/:userId/follow", async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.user._id, {
+      $addToSet: { following: req.params.userId },
+    });
+
+    res.status(200).json({ message: "Successfully followed user" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/:userId/unfollow", async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.user._id, {
+      $pull: { following: req.params.userId },
+    });
+
+    res.status(200).json({ message: "Successfully unfollowed user" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

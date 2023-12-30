@@ -3,6 +3,7 @@
     <router-link to="/home">
       <div class="logo">Y</div>
     </router-link>
+    <Search></Search>
     <div v-if="user" class="user">
       <router-link :to="`/home/user/${user._id}`">
         <div class="flex">
@@ -21,6 +22,7 @@
 <script setup>
 import { computed } from "vue";
 import { userStore } from "../../stores/user.store";
+import Search from "./search/Search.vue";
 
 const user = computed(() => {
   return userStore.userInfo.user;

@@ -14,24 +14,37 @@
       </button>
       <button v-else type="button" @click="goToSettings">Settings</button>
     </div>
+    <div class="threads">
+      <NewThreadForm v-if="isLoggedUser" :threads="threads"></NewThreadForm>
+      <ThreadList :threads="threads"></ThreadList>
+    </div>
   </div>
 </template>
 
 <script setup>
+import NewThreadForm from "./new-thread-form/NewThreadForm.vue";
+import ThreadList from "../../shared/threads/ThreadList.vue";
 import { ref, onMounted, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { userStore } from "../../stores/user.store";
 import axios from "axios";
 
 const user = ref(null);
+const threads = ref([]);
 
 const isFollowing = ref(false);
 
-watch(user, () => {
-  isFollowing.value = userStore.userInfo.user.following.includes(
-    user.value._id
-  );
-});
+const setIsFollowing = () => {
+  if (user.value && userStore.userInfo.user.following) {
+    isFollowing.value = userStore.userInfo.user.following.includes(
+      user.value._id
+    );
+  }
+};
+
+// depending on what loads first
+watch(user, setIsFollowing);
+watch(userStore.userInfo, setIsFollowing);
 
 const isLoggedUser = computed(() => {
   return user.value?._id === userStore.userInfo.user._id;
@@ -86,18 +99,27 @@ watch(route, () => {
 </script>
 
 <style scoped>
-h2,
-p {
+h2 {
   margin: 0;
+  text-align: center;
 }
 .wrapper {
   width: 100vw;
-  height: 100vh;
+  min-height: calc(100vh - 40px - 75px);
   display: flex;
-  align-items: center;
-  padding: 50px;
+  padding: 20px 70px;
+  gap: 100px;
+
+  .threads {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 .card {
+  align-self: flex-start;
+  margin-top: 100px;
   width: 20%;
   padding: 30px;
   display: flex;

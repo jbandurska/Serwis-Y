@@ -1,6 +1,4 @@
 <script setup>
-import Header from "./components/header/Header.vue";
-import Auth from "./components/auth-forms/Auth.vue";
 import { userStore } from "./stores/user.store";
 import { watch } from "vue";
 import { useRouter, useRoute } from "vue-router";

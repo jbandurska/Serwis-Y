@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import { connectToDatabase } from "./db/dbConnection.js";
 import { configurePassport } from "./config/passport.js";
-import { authRouter, userRouter } from "./routes/index.js";
+import { authRouter, threadRouter, userRouter } from "./routes/index.js";
 import fileUpload from "express-fileupload";
 
 dotenv.config();
@@ -41,6 +41,7 @@ configurePassport(app);
 
 app.use("/api", authRouter);
 app.use("/api/users", userRouter);
+app.use("/api/threads", threadRouter);
 
 const key = fs.readFileSync("key.pem");
 const cert = fs.readFileSync("cert.pem");

@@ -43,6 +43,7 @@ h1 {
   background-color: #1a1a1a;
 }
 .center-container {
+  padding-top: 75px;
   display: flex;
   align-items: center;
   justify-content: center;

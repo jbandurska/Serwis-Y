@@ -19,11 +19,6 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  posts: {
-    type: Array,
-    required: true,
-    default: [],
-  },
   profilePicture: {
     type: String,
     required: false,

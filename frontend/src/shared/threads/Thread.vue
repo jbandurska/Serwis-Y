@@ -1,29 +1,3 @@
-<script setup>
-import { computed } from "vue";
-import { useRoute } from "vue-router";
-import CommentList from "./comments/CommentList.vue";
-
-const route = useRoute();
-const threadId = computed(() => {
-  return route.params.threadId;
-});
-
-const props = defineProps({
-  thread: Object,
-});
-
-const user = computed(() => {
-  return props.thread.user;
-});
-const date = computed(() => {
-  if (props.thread?.createdAt)
-    return new Date(props.thread.createdAt).toLocaleString();
-});
-const isThreadView = computed(() => {
-  return !!route.params.threadId;
-});
-</script>
-
 <template>
   <div v-if="thread" class="thread box">
     <div class="head flex">
@@ -41,6 +15,10 @@ const isThreadView = computed(() => {
       </div>
       <p class="small">
         {{ date }}
+        <DeleteThreadBtn
+          :thread="thread"
+          @delete="deleteThread"
+        ></DeleteThreadBtn>
       </p>
     </div>
 
@@ -61,10 +39,50 @@ const isThreadView = computed(() => {
   </div>
 </template>
 
+<script setup>
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import CommentList from "./comments/CommentList.vue";
+import DeleteThreadBtn from "./DeleteThreadBtn.vue";
+
+const route = useRoute();
+const router = useRouter();
+const threadId = computed(() => {
+  return route.params.threadId;
+});
+
+const props = defineProps({
+  thread: Object,
+  deleteThread: Function,
+});
+
+const user = computed(() => {
+  return props.thread.user;
+});
+const date = computed(() => {
+  if (props.thread?.createdAt)
+    return new Date(props.thread.createdAt).toLocaleString();
+});
+const isThreadView = computed(() => {
+  return !!route.params.threadId;
+});
+
+const deleteThread = () => {
+  if (route.path.includes("thread")) {
+    router.back();
+  } else {
+    props.deleteThread(props.thread._id);
+  }
+};
+</script>
+
 <style scoped>
 .small {
   color: #777;
   font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 .thread {
   padding: 20px;
@@ -72,6 +90,16 @@ const isThreadView = computed(() => {
   flex-direction: column;
   min-width: 1000px;
   max-width: 1200px;
+
+  button {
+    margin: 0 auto;
+    display: block;
+    padding: 0;
+    background-color: transparent;
+    color: var(--main);
+    margin-bottom: 5px;
+    font-size: 0.9em;
+  }
 
   .content {
     padding: 20px;

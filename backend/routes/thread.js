@@ -149,4 +149,17 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.delete("/:threadId", async (req, res) => {
+  const threadId = req.params.threadId;
+
+  try {
+    await Thread.deleteOne({ _id: threadId });
+
+    return res.status(204).send();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;

@@ -2,8 +2,10 @@
   <div class="list" :class="{ 'odd-list': nestingLevel % 2 }">
     <Comment
       v-for="subthread in subthreads"
+      :key="subthread._id"
       :thread="subthread"
       :nesting-level="nestingLevel"
+      @delete="getSubthreads"
     ></Comment>
     <CommentForm
       :parentThreadId="parentThreadId"

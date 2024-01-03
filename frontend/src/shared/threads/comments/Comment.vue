@@ -4,7 +4,13 @@
       <router-link v-if="thread.user" :to="`/home/user/${thread.user._id}`">
         {{ thread.user.login }}
       </router-link>
-      <p class="small">{{ date }}</p>
+      <p class="small">
+        {{ date }}
+        <DeleteThreadBtn
+          :thread="thread"
+          @delete="$emit('delete')"
+        ></DeleteThreadBtn>
+      </p>
     </div>
     <p>
       {{ thread.content }}
@@ -22,6 +28,7 @@
 
 <script setup>
 import CommentList from "./CommentList.vue";
+import DeleteThreadBtn from "../DeleteThreadBtn.vue";
 import { ref, computed } from "vue";
 
 const props = defineProps({
@@ -45,6 +52,9 @@ const toggleThread = () => {
 .small {
   color: #777;
   font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .head {

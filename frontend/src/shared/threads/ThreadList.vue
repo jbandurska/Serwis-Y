@@ -1,3 +1,11 @@
+<template>
+  <Thread
+    v-for="thread in threads.value"
+    :thread="thread"
+    :deleteThread="deleteThread"
+  ></Thread>
+</template>
+
 <script setup>
 import { onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
@@ -28,6 +36,10 @@ const getThreads = async () => {
   }
 };
 
+const deleteThread = (id) => {
+  threads.value = threads.value.filter((t) => t._id !== id);
+};
+
 watch(route, () => {
   getThreads();
 });
@@ -36,7 +48,3 @@ onMounted(() => {
   getThreads();
 });
 </script>
-
-<template>
-  <Thread v-for="thread in threads.value" :thread="thread"></Thread>
-</template>

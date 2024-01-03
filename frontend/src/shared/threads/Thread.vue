@@ -2,6 +2,11 @@
   <div class="wrapper">
     <GoBackBtn v-if="isThreadView" class="go-back"></GoBackBtn>
     <div v-if="thread" class="thread box">
+      <router-link
+        v-if="thread.parentId"
+        :to="`/home/threads/${thread.parentId}`"
+        >parent thread</router-link
+      >
       <div class="head flex">
         <div v-if="user" class="user">
           <router-link :to="`/home/user/${user._id}`">
@@ -93,6 +98,10 @@ const deleteThread = () => {
     position: absolute;
     left: -70px;
     background-color: var(--main);
+  }
+
+  .border {
+    border-left: 1px solid var(--main);
   }
 }
 .small {

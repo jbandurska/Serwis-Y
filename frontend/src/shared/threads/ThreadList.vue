@@ -1,6 +1,7 @@
 <template>
   <Thread
     v-for="thread in threads.value"
+    :key="thread._id"
     :thread="thread"
     :deleteThread="deleteThread"
   ></Thread>

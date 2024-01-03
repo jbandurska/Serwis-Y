@@ -18,16 +18,16 @@
     </p>
 
     <router-link
-      v-if="thread._id"
+      v-if="thread._id && !isForm"
       :to="`/home/threads/${thread._id}`"
       class="original"
-      >See original thread</router-link
+      >see original thread</router-link
     >
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 
@@ -37,6 +37,10 @@ const props = defineProps({
 
 const route = useRoute();
 const thread = ref({});
+
+const isForm = computed(() => {
+  return route.path.includes("quote");
+});
 
 const getQuotedThread = async () => {
   const quoteId = route.params.quoteId || props.quoteId;
@@ -58,6 +62,10 @@ const getQuotedThread = async () => {
 };
 
 onMounted(() => {
+  getQuotedThread();
+});
+
+watch(props, () => {
   getQuotedThread();
 });
 </script>

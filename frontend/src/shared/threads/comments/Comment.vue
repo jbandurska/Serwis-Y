@@ -5,6 +5,9 @@
         {{ thread.user.login }}
       </router-link>
       <p class="small">
+        <router-link :to="`/home/threads/${thread._id}`"
+          >thread page</router-link
+        >
         {{ date }}
         <DeleteThreadBtn
           :thread="thread"

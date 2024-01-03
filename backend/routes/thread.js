@@ -44,25 +44,28 @@ router.get("/:threadId", async (req, res) => {
   const threadId = req.params.threadId;
 
   try {
-    const thread = await Thread.findById(threadId);
+    const thread = await Thread.findById(threadId).populate({
+      path: "user",
+      select: "login profilePicture",
+    });
 
     if (!thread) {
       return res.status(404).json({ message: "Thread not found" });
     }
 
-    const user = await User.findById(thread.user).select({
-      _id: 1,
-      login: 1,
-      profilePicture: 1,
-    });
-
-    const threadWithUser = {
-      ...thread._doc,
-      user,
-    };
+    let parentId;
+    if (!thread.isMainThread) {
+      const parent = await Thread.findOne({
+        children: thread._id,
+      });
+      parentId = parent._id;
+    }
 
     return res.json({
-      thread: threadWithUser,
+      thread: {
+        ...thread._doc,
+        parentId,
+      },
     });
   } catch (error) {
     console.error(error);

@@ -16,7 +16,8 @@
 
 <script setup>
 import axios from "axios";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import Comment from "./Comment.vue";
 import CommentForm from "./CommentForm.vue";
 
@@ -24,6 +25,8 @@ const props = defineProps({
   parentThreadId: String,
   nestingLevel: Number,
 });
+
+const route = useRoute();
 
 const subthreads = ref([]);
 
@@ -43,6 +46,10 @@ const getSubthreads = async () => {
 };
 
 onMounted(() => {
+  getSubthreads();
+});
+
+watch(route, () => {
   getSubthreads();
 });
 </script>

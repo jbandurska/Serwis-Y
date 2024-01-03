@@ -1,5 +1,5 @@
 <template>
-  <button type="button" @click="goToQuoteForm">Quote thread</button>
+  <button type="button" @click="goToQuoteForm">quote thread</button>
 </template>
 
 <script setup>

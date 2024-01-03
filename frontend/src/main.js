@@ -11,6 +11,7 @@ import ThreadPage from "./pages/ThreadPage.vue";
 import FeedPage from "./pages/FeedPage.vue";
 import UserProfile from "./components/user-profile/UserProfile.vue";
 import Settings from "./components/settings/Settings.vue";
+import QuoteForm from "./components/quotes/QuoteForm.vue";
 
 const routes = [
   {
@@ -24,6 +25,10 @@ const routes = [
       {
         path: "",
         component: FeedPage,
+      },
+      {
+        path: "quote/:quoteId",
+        component: QuoteForm,
       },
       {
         path: "threads/:threadId",

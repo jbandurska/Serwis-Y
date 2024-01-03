@@ -46,6 +46,10 @@ router.get("/:threadId", async (req, res) => {
   try {
     const thread = await Thread.findById(threadId);
 
+    if (!thread) {
+      return res.status(404).json({ message: "Thread not found" });
+    }
+
     const user = await User.findById(thread.user).select({
       _id: 1,
       login: 1,
@@ -113,6 +117,38 @@ router.get("/user/:userId", async (req, res) => {
       threads: threadsWithUser,
     });
   } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/quote/:threadId", async (req, res) => {
+  const content = req.body.content;
+  const threadId = req.params.threadId;
+  const userId = req.user._id;
+
+  if (!content) {
+    return res.status(400).json({ message: "No content field" });
+  }
+
+  try {
+    const newThread = await Thread.create({
+      user: userId,
+      quote: threadId,
+      isMainThread: true,
+      content,
+    });
+
+    return res.status(201).json({
+      thread: {
+        ...newThread._doc,
+        user: {
+          _id: userId,
+          login: req.user.login,
+        },
+      },
+    });
+  } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 });

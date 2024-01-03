@@ -34,11 +34,13 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
+  background-color: #333333b9;
   padding: 10px 50px;
+  backdrop-filter: blur(10px);
   width: 100%;
   position: fixed;
   top: 0;
+  z-index: 10;
 }
 
 .user {

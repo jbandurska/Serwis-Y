@@ -1,41 +1,47 @@
 <template>
-  <div v-if="thread" class="thread box">
-    <div class="head flex">
-      <div v-if="user" class="user">
-        <router-link :to="`/home/user/${user._id}`">
-          <div class="flex">
-            <img
-              v-if="user.profilePicture"
-              :src="user.profilePicture"
-              alt="profile picture"
-            />
-            <span>{{ user.login }}</span>
-          </div>
-        </router-link>
+  <div class="wrapper">
+    <GoBackBtn v-if="isThreadView" class="go-back"></GoBackBtn>
+    <div v-if="thread" class="thread box">
+      <div class="head flex">
+        <div v-if="user" class="user">
+          <router-link :to="`/home/user/${user._id}`">
+            <div class="flex">
+              <img
+                v-if="user.profilePicture"
+                :src="user.profilePicture"
+                alt="profile picture"
+              />
+              <span>{{ user.login }}</span>
+            </div>
+          </router-link>
+        </div>
+        <p class="small">
+          <QuoteThreadBtn :threadId="thread._id"></QuoteThreadBtn>
+          {{ date }}
+          <DeleteThreadBtn
+            :thread="thread"
+            @delete="deleteThread"
+          ></DeleteThreadBtn>
+        </p>
       </div>
-      <p class="small">
-        {{ date }}
-        <DeleteThreadBtn
-          :thread="thread"
-          @delete="deleteThread"
-        ></DeleteThreadBtn>
+
+      <Quote v-if="thread.quote" :quote-id="thread.quote"></Quote>
+
+      <p class="content">
+        {{ thread.content }}
       </p>
+
+      <p class="comments small">{{ thread.children?.length }} comments</p>
+
+      <CommentList
+        v-if="isThreadView"
+        :parent-thread-id="threadId"
+        :nesting-level="0"
+      ></CommentList>
+      <router-link v-else :to="`/home/threads/${thread._id}`"
+        >See thread</router-link
+      >
     </div>
-
-    <p class="content">
-      {{ thread.content }}
-    </p>
-
-    <p class="comments small">{{ thread.children?.length }} comments</p>
-
-    <CommentList
-      v-if="isThreadView"
-      :parent-thread-id="threadId"
-      :nesting-level="0"
-    ></CommentList>
-    <router-link v-else :to="`/home/threads/${thread._id}`"
-      >See thread</router-link
-    >
   </div>
 </template>
 
@@ -43,7 +49,10 @@
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import CommentList from "./comments/CommentList.vue";
+import Quote from "../../components/quotes/Quote.vue";
 import DeleteThreadBtn from "./DeleteThreadBtn.vue";
+import QuoteThreadBtn from "./QuoteThreadBtn.vue";
+import GoBackBtn from "../GoBackBtn.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -77,6 +86,15 @@ const deleteThread = () => {
 </script>
 
 <style scoped>
+.wrapper {
+  position: relative;
+
+  .go-back {
+    position: absolute;
+    left: -70px;
+    background-color: var(--main);
+  }
+}
 .small {
   color: #777;
   font-size: 0.9em;

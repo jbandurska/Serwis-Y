@@ -1,12 +1,12 @@
 <template>
   <div class="page">
-    <Thread :thread="thread"></Thread>
+    <Thread v-if="thread._id" :thread="thread"></Thread>
   </div>
 </template>
 
 <script setup>
 import Thread from "../shared/threads/Thread.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 
@@ -28,6 +28,10 @@ const getThread = async () => {
 };
 
 onMounted(() => {
+  getThread();
+});
+
+watch(route, () => {
   getThread();
 });
 </script>

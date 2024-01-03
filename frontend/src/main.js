@@ -8,6 +8,7 @@ import { environment } from "./env";
 import Auth from "./components/auth-forms/Auth.vue";
 import HomePage from "./pages/HomePage.vue";
 import ThreadPage from "./pages/ThreadPage.vue";
+import FeedPage from "./pages/FeedPage.vue";
 import UserProfile from "./components/user-profile/UserProfile.vue";
 import Settings from "./components/settings/Settings.vue";
 
@@ -20,6 +21,10 @@ const routes = [
     path: "/home",
     component: HomePage,
     children: [
+      {
+        path: "",
+        component: FeedPage,
+      },
       {
         path: "threads/:threadId",
         component: ThreadPage,

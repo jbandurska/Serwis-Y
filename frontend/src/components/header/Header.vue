@@ -61,9 +61,9 @@ header {
   transition: 0.25s;
 
   &:hover {
-    text-shadow: 3px 0px 7px var(--text), -3px 0px 7px var(--text),
-      0px 4px 7px var(--text);
-    color: #1a1a1a;
+    text-shadow: 3px 0px 7px var(--main), -3px 0px 7px var(--main),
+      0px 4px 7px var(--main);
+    color: var(--text);
   }
 }
 </style>

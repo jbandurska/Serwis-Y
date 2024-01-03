@@ -105,6 +105,7 @@ const deleteThread = () => {
     padding: 20px;
     background-color: var(--bg);
     border-radius: 8px;
+    white-space: pre-wrap;
   }
 
   a {

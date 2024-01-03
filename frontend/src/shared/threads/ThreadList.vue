@@ -33,6 +33,8 @@ const getThreads = async () => {
     } catch (error) {
       alert("Something went wrong :(");
     }
+  } else {
+    threads.value = props.threads;
   }
 };
 

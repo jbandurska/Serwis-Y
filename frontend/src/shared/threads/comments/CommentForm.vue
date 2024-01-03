@@ -1,6 +1,11 @@
 <template>
   <div class="thread-form">
-    <textarea ref="textarea" v-model="content" placeholder="Comment"></textarea>
+    <textarea
+      ref="textarea"
+      v-model="content"
+      placeholder="Comment"
+      @keyup.enter="handleEnterKey"
+    ></textarea>
     <button @click="addThread">Post</button>
   </div>
 </template>
@@ -22,6 +27,7 @@ watch(content, () => {
 });
 
 const addThread = async () => {
+  content.value = content.value.trim();
   if (content.value) {
     try {
       const response = await axios.post(
@@ -34,12 +40,17 @@ const addThread = async () => {
         }
       );
 
-      console.log(response.data.thread);
       props.subthreads.push(response.data.thread);
       content.value = "";
     } catch (error) {
       console.error(error);
     }
+  }
+};
+
+const handleEnterKey = (event) => {
+  if (!event.shiftKey) {
+    addThread();
   }
 };
 </script>

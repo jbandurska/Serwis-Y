@@ -44,7 +44,7 @@
         :nesting-level="0"
       ></CommentList>
       <router-link v-else :to="`/home/threads/${thread._id}`"
-        >See thread</router-link
+        >see thread</router-link
       >
     </div>
   </div>

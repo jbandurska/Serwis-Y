@@ -4,6 +4,7 @@
       ref="textarea"
       v-model="content"
       placeholder="What's on your mind?"
+      @keyup.enter="handleEnterKey"
     ></textarea>
     <button @click="addThread">Post</button>
   </div>
@@ -26,6 +27,7 @@ watch(content, () => {
 });
 
 const addThread = async () => {
+  content.value = content.value.trim();
   if (content.value) {
     try {
       const response = await axios.post(
@@ -47,6 +49,12 @@ const addThread = async () => {
     } catch (error) {
       console.error(error);
     }
+  }
+};
+
+const handleEnterKey = (event) => {
+  if (!event.shiftKey) {
+    addThread();
   }
 };
 </script>

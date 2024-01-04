@@ -39,5 +39,10 @@ watch(route, () => {
 <style scoped>
 .page {
   padding: 20px;
+  flex-grow: 1;
+
+  @media (max-width: 800px) {
+    padding: 0;
+  }
 }
 </style>

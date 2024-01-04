@@ -19,25 +19,39 @@ const logout = async () => {
 </script>
 
 <template>
-  <button type="button" @click="logout">
-    <img src="/src/assets/logout.svg" alt="logout" />
-  </button>
+  <div>
+    <button type="button" @click="logout">
+      <img src="/src/assets/logout.svg" alt="logout" />
+    </button>
+  </div>
 </template>
 
 <style scoped>
-button {
+div {
   position: fixed;
   left: 30px;
   bottom: 30px;
-  aspect-ratio: 1/1;
-  width: 45px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
-  img {
-    height: 30px;
+  button {
+    aspect-ratio: 1/1;
+    width: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      height: 30px;
+    }
+  }
+
+  @media (max-width: 1300px) {
+    background-color: var(--main);
+    padding: 5px;
+    left: 0;
+    bottom: 10px;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
   }
 }
 </style>

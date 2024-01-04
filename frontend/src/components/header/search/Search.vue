@@ -1,7 +1,9 @@
 <template>
   <div class="wrapper">
     <input v-model="searchKey" type="text" placeholder="Search" />
-    <button @click="searchUsers">Search</button>
+    <button @click="searchUsers">
+      <img src="/src/assets/search.svg" alt="" />
+    </button>
     <div class="results" v-if="searchResults.length">
       <ul>
         <li v-for="user in searchResults" :key="user._id">
@@ -51,7 +53,11 @@ const searchUsers = async () => {
 <style scoped>
 .wrapper {
   position: relative;
-  width: 40%;
+  width: 70%;
+  max-width: 800px;
+  display: flex;
+  align-items: stretch;
+  gap: 5px;
 
   .results {
     position: absolute;
@@ -97,12 +103,22 @@ const searchUsers = async () => {
   }
 
   input {
-    width: 83%;
+    width: 100%;
   }
 
   button {
-    width: 15%;
-    margin-left: 2%;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      height: 1em;
+    }
+  }
+
+  @media (max-width: 1000px) {
+    width: 100%;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="box first">
     <h2>Quote thread</h2>
     <Quote></Quote>
     <div class="thread-form">
@@ -56,7 +56,8 @@ const addQuote = async () => {
 
 <style scoped>
 .box {
-  width: 1000px;
+  width: 100%;
+  max-width: 1000px;
 
   h2 {
     text-align: center;
@@ -82,6 +83,14 @@ const addQuote = async () => {
 
   button {
     width: 10%;
+  }
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+
+    button {
+      width: auto;
+    }
   }
 }
 </style>

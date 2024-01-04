@@ -49,5 +49,10 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 25px;
+
+  @media (max-width: 800px) {
+    padding: 0;
+    gap: 0;
+  }
 }
 </style>

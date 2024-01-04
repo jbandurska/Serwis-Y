@@ -1,6 +1,6 @@
 <template>
   <div v-if="user" class="wrapper">
-    <div class="card box">
+    <div class="card box first">
       <div class="info">
         <img
           v-show="user.profilePicture"
@@ -84,6 +84,9 @@ const toggleFollow = async () => {
     }
 
     isFollowing.value = !isFollowing.value;
+
+    // to refresh user info after toggling follow
+    userStore.checkIfAuthenticated();
   } catch (error) {
     console.error(error);
   }
@@ -107,8 +110,8 @@ h2 {
   width: 100vw;
   min-height: calc(100vh - 40px - 75px);
   display: flex;
-  padding: 20px 70px;
-  gap: 100px;
+  padding: 20px;
+  gap: 50px;
 
   .threads {
     width: 100%;
@@ -119,7 +122,7 @@ h2 {
 }
 .card {
   align-self: flex-start;
-  margin-top: 100px;
+  margin-top: 101px;
   width: 20%;
   padding: 30px;
   display: flex;
@@ -127,7 +130,6 @@ h2 {
   justify-content: space-between;
   align-items: center;
   gap: 15px;
-  aspect-ratio: 2/1;
 
   .info {
     display: flex;
@@ -141,6 +143,28 @@ h2 {
     border-radius: 50%;
     aspect-ratio: 1/1;
     margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 800px) {
+  .wrapper {
+    flex-direction: column;
+    padding: 0;
+    gap: 0;
+
+    .threads {
+      gap: 0;
+    }
+
+    .card {
+      margin: 0;
+      width: 100%;
+      aspect-ratio: auto;
+
+      img {
+        width: 100px;
+      }
+    }
   }
 }
 </style>

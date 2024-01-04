@@ -1,5 +1,5 @@
 <template>
-  <div class="box wrapper">
+  <div class="box wrapper first">
     <h2>User Settings</h2>
     <form @submit.prevent="updateUser">
       <label for="login">Login:</label>
@@ -95,10 +95,11 @@ const deleteUser = async () => {
 .wrapper {
   padding: 20px 50px;
   margin: 30px;
-  margin-top: 104px;
+  width: 100%;
 }
 
 form {
-  width: 600px;
+  width: 100%;
+  max-width: 600px;
 }
 </style>

@@ -81,5 +81,13 @@ const handleEnterKey = (event) => {
   button {
     width: 10%;
   }
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+
+    button {
+      width: auto;
+    }
+  }
 }
 </style>

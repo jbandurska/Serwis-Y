@@ -64,6 +64,10 @@ watch(route, () => {
   border-radius: 8px;
   background-color: #1a1a1a;
   margin: 0 10px;
+
+  @media (max-width: 800px) {
+    margin: 0 -10px;
+  }
 }
 
 .odd-list {

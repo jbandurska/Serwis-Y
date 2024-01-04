@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <GoBackBtn v-if="isThreadView" class="go-back"></GoBackBtn>
-    <div v-if="thread" class="thread box">
+    <div v-if="thread" class="thread box" :class="{ first: isThreadView }">
       <router-link
         v-if="thread.parentId"
         :to="`/home/threads/${thread.parentId}`"
@@ -115,8 +115,7 @@ const deleteThread = () => {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  min-width: 1000px;
-  max-width: 1200px;
+  width: 100%;
 
   button {
     margin: 0 auto;
@@ -158,5 +157,14 @@ const deleteThread = () => {
   padding: 0 10px;
   justify-content: space-between;
   flex-wrap: nowrap;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 0;
+
+    .user {
+      order: 1;
+    }
+  }
 }
 </style>

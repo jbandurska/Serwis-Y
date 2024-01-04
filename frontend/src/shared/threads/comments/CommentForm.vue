@@ -77,5 +77,14 @@ const handleEnterKey = (event) => {
   button {
     width: 10%;
   }
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+    gap: 2px;
+
+    button {
+      width: auto;
+    }
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="box auth">
+  <div class="box auth first">
     <div class="form-container">
       <h1>Log in</h1>
       <form @submit.prevent="login">

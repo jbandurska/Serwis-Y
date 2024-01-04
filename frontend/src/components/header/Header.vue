@@ -1,10 +1,10 @@
 <template>
   <header>
-    <router-link to="/home">
+    <router-link to="/home" class="small">
       <div class="logo">Y</div>
     </router-link>
-    <Search></Search>
-    <div v-if="user" class="user">
+    <Search class="search-bar"></Search>
+    <div v-if="user" class="user small">
       <router-link :to="`/home/user/${user._id}`">
         <div class="flex">
           <span>{{ user.login }}</span>
@@ -66,6 +66,22 @@ header {
     text-shadow: 3px 0px 7px var(--main), -3px 0px 7px var(--main),
       0px 4px 7px var(--main);
     color: var(--text);
+  }
+}
+
+@media (max-width: 1000px) {
+  header {
+    flex-wrap: wrap;
+    padding: 20px 50px;
+    gap: 20px;
+
+    .search-bar {
+      order: 1;
+    }
+
+    .small {
+      margin: 0 auto;
+    }
   }
 }
 </style>

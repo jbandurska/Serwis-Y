@@ -79,7 +79,7 @@ const updateUser = async () => {
 const deleteUser = async () => {
   if (confirm("Are you sure you want to delete your account?")) {
     try {
-      const response = await axios.delete("/api/users/delete", {
+      await axios.delete("/api/users/delete", {
         withCredentials: true,
       });
 
@@ -96,10 +96,10 @@ const deleteUser = async () => {
   padding: 20px 50px;
   margin: 30px;
   width: 100%;
+  max-width: 700px;
 }
 
 form {
   width: 100%;
-  max-width: 600px;
 }
 </style>

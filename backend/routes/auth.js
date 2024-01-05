@@ -46,7 +46,7 @@ router.post("/register", async (req, res) => {
   try {
     const existingUser = await User.findOne({ $or: [{ login }, { email }] });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(409).json({ message: "User already exists" });
     }
 
     const newUser = new User({
@@ -64,6 +64,12 @@ router.post("/register", async (req, res) => {
       return res.json({ message: "Registration successful", user: newUser });
     });
   } catch (error) {
+    if (error.errors?.email?.properties?.message) {
+      return res
+        .status(400)
+        .json({ message: error.errors.email.properties.message });
+    }
+
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }

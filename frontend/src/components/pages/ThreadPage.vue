@@ -5,8 +5,8 @@
 </template>
 
 <script setup>
-import Thread from "../shared/threads/Thread.vue";
-import { ref, onMounted, watch } from "vue";
+import Thread from "../other/Thread.vue";
+import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 
@@ -27,13 +27,15 @@ const getThread = async () => {
   }
 };
 
-onMounted(() => {
-  getThread();
-});
-
-watch(route, () => {
-  getThread();
-});
+watch(
+  route,
+  () => {
+    getThread();
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <style scoped>

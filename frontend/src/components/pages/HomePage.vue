@@ -1,6 +1,6 @@
 <script setup>
-import Header from "../components/header/Header.vue";
-import LogoutBtn from "../components/logout-btn/LogoutBtn.vue";
+import Header from "../layout/Header.vue";
+import LogoutBtn from "../buttons/LogoutBtn.vue";
 </script>
 
 <template>

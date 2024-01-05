@@ -5,13 +5,13 @@ import App from "./App.vue";
 import axios from "axios";
 import { environment } from "./env";
 
-import Auth from "./components/auth-forms/Auth.vue";
-import HomePage from "./pages/HomePage.vue";
-import ThreadPage from "./pages/ThreadPage.vue";
-import FeedPage from "./pages/FeedPage.vue";
-import UserProfile from "./components/user-profile/UserProfile.vue";
-import Settings from "./components/settings/Settings.vue";
-import QuoteForm from "./components/quotes/QuoteForm.vue";
+import Auth from "./components/forms/Auth.vue";
+import HomePage from "./components/pages/HomePage.vue";
+import ThreadPage from "./components/pages/ThreadPage.vue";
+import FeedPage from "./components/pages/FeedPage.vue";
+import UserProfile from "./components/pages/UserProfile.vue";
+import Settings from "./components/forms/Settings.vue";
+import QuoteForm from "./components/forms/QuoteForm.vue";
 
 const routes = [
   {

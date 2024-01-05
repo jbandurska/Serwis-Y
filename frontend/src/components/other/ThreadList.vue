@@ -3,12 +3,12 @@
     v-for="thread in threads.value"
     :key="thread._id"
     :thread="thread"
-    :deleteThread="deleteThread"
-  ></Thread>
+    :delete-thread="deleteThread"
+  />
 </template>
 
 <script setup>
-import { onMounted, watch } from "vue";
+import { watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import Thread from "./Thread.vue";
 import axios from "axios";
@@ -43,11 +43,5 @@ const deleteThread = (id) => {
   threads.value = threads.value.filter((t) => t._id !== id);
 };
 
-watch(route, () => {
-  getThreads();
-});
-
-onMounted(() => {
-  getThreads();
-});
+watchEffect(getThreads);
 </script>

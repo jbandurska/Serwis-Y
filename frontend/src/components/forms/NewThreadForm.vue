@@ -1,10 +1,10 @@
 <template>
-  <div class="thread-form">
+  <div class="box thread-form">
     <textarea
       ref="textarea"
       v-model="content"
-      placeholder="Comment"
-      @keyup.enter="handleEnterKey"
+      placeholder="What's on your mind?"
+      @keyup.enter.exact="addThread"
     ></textarea>
     <button @click="addThread">Post</button>
   </div>
@@ -12,11 +12,11 @@
 
 <script setup>
 import { ref, watch } from "vue";
+import { userStore } from "../../stores/user.store";
 import axios from "axios";
 
 const props = defineProps({
-  parentThreadId: String,
-  subthreads: Array,
+  threads: Array,
 });
 
 const content = ref("");
@@ -31,7 +31,7 @@ const addThread = async () => {
   if (content.value) {
     try {
       const response = await axios.post(
-        `/api/threads/${props.parentThreadId}`,
+        "/api/threads",
         {
           content: content.value,
         },
@@ -40,17 +40,15 @@ const addThread = async () => {
         }
       );
 
-      props.subthreads.push(response.data.thread);
       content.value = "";
+      props.threads.value.unshift({
+        ...response.data.thread,
+        commentsCount: 0,
+        user: userStore.userInfo.user || {},
+      });
     } catch (error) {
       console.error(error);
     }
-  }
-};
-
-const handleEnterKey = (event) => {
-  if (!event.shiftKey) {
-    addThread();
   }
 };
 </script>
@@ -80,7 +78,6 @@ const handleEnterKey = (event) => {
 
   @media (max-width: 1000px) {
     flex-direction: column;
-    gap: 2px;
 
     button {
       width: auto;

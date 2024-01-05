@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted } from "vue";
+import { ref, watchEffect, computed } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 
@@ -61,13 +61,7 @@ const getQuotedThread = async () => {
   }
 };
 
-onMounted(() => {
-  getQuotedThread();
-});
-
-watch(props, () => {
-  getQuotedThread();
-});
+watchEffect(getQuotedThread);
 </script>
 
 <style scoped>

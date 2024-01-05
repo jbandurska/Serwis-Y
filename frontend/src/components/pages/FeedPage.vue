@@ -1,14 +1,14 @@
 <template>
   <div class="threads">
     <h2>People you follow posted {{ message }}</h2>
-    <ThreadListVue v-if="threads.length" :threads="threads"></ThreadListVue>
+    <ThreadListVue v-if="threads.length" :threads="threads" />
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
 import { onMounted, ref } from "vue";
-import ThreadListVue from "../shared/threads/ThreadList.vue";
+import ThreadListVue from "../other/ThreadList.vue";
 
 const threads = ref([]);
 const message = ref("0 threads this week :(");

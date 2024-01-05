@@ -22,7 +22,7 @@
 <script setup>
 import { computed } from "vue";
 import { userStore } from "../../stores/user.store";
-import Search from "./search/Search.vue";
+import Search from "../other/Search.vue";
 
 const user = computed(() => {
   return userStore.userInfo.user;

@@ -1,29 +1,23 @@
 <template>
-  <div class="box first">
-    <h2>Quote thread</h2>
-    <Quote></Quote>
-    <div class="thread-form">
-      <textarea
-        ref="textarea"
-        v-model="content"
-        placeholder="What would you add?"
-      ></textarea>
-      <button @click="addQuote">Quote</button>
-    </div>
+  <div class="thread-form">
+    <textarea
+      ref="textarea"
+      v-model="content"
+      placeholder="Comment"
+      @keyup.enter.exact="addThread"
+    ></textarea>
+    <button @click="addThread">Post</button>
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { userStore } from "../../stores/user.store";
 import axios from "axios";
-import Quote from "./Quote.vue";
 
-const route = useRoute();
-const router = useRouter();
-
-const loggedUserId = userStore.userInfo.user._id;
+const props = defineProps({
+  parentThreadId: String,
+  subthreads: Array,
+});
 
 const content = ref("");
 const textarea = ref(null);
@@ -32,11 +26,12 @@ watch(content, () => {
   textarea.value.style.height = textarea.value.scrollHeight + "px";
 });
 
-const addQuote = async () => {
+const addThread = async () => {
+  content.value = content.value.trim();
   if (content.value) {
     try {
-      await axios.post(
-        `/api/threads/quote/${route.params.quoteId}`,
+      const response = await axios.post(
+        `/api/threads/${props.parentThreadId}`,
         {
           content: content.value,
         },
@@ -45,8 +40,8 @@ const addQuote = async () => {
         }
       );
 
+      props.subthreads.push(response.data.thread);
       content.value = "";
-      router.push(`/home/user/${loggedUserId}`);
     } catch (error) {
       console.error(error);
     }
@@ -55,14 +50,6 @@ const addQuote = async () => {
 </script>
 
 <style scoped>
-.box {
-  width: 100%;
-  max-width: 1000px;
-
-  h2 {
-    text-align: center;
-  }
-}
 .thread-form {
   display: flex;
   justify-content: space-between;
@@ -87,6 +74,7 @@ const addQuote = async () => {
 
   @media (max-width: 1000px) {
     flex-direction: column;
+    gap: 2px;
 
     button {
       width: auto;

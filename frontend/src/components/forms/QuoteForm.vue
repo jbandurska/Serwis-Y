@@ -1,23 +1,30 @@
 <template>
-  <div class="box thread-form">
-    <textarea
-      ref="textarea"
-      v-model="content"
-      placeholder="What's on your mind?"
-      @keyup.enter="handleEnterKey"
-    ></textarea>
-    <button @click="addThread">Post</button>
+  <div class="box first">
+    <h2>Quote thread</h2>
+    <Quote></Quote>
+    <div class="thread-form">
+      <textarea
+        ref="textarea"
+        v-model="content"
+        placeholder="What would you add?"
+        @keyup.enter.exact="addQuote"
+      ></textarea>
+      <button @click="addQuote">Quote</button>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from "vue";
-import { userStore } from "../../../stores/user.store";
+import { useRoute, useRouter } from "vue-router";
+import { userStore } from "../../stores/user.store";
 import axios from "axios";
+import Quote from "../other/Quote.vue";
 
-const props = defineProps({
-  threads: Array,
-});
+const route = useRoute();
+const router = useRouter();
+
+const loggedUserId = userStore.userInfo.user._id;
 
 const content = ref("");
 const textarea = ref(null);
@@ -26,12 +33,11 @@ watch(content, () => {
   textarea.value.style.height = textarea.value.scrollHeight + "px";
 });
 
-const addThread = async () => {
-  content.value = content.value.trim();
+const addQuote = async () => {
   if (content.value) {
     try {
-      const response = await axios.post(
-        "/api/threads",
+      await axios.post(
+        `/api/threads/quote/${route.params.quoteId}`,
         {
           content: content.value,
         },
@@ -41,25 +47,23 @@ const addThread = async () => {
       );
 
       content.value = "";
-      props.threads.value.unshift({
-        ...response.data.thread,
-        commentsCount: 0,
-        user: userStore.userInfo.user || {},
-      });
+      router.push(`/home/user/${loggedUserId}`);
     } catch (error) {
       console.error(error);
     }
   }
 };
-
-const handleEnterKey = (event) => {
-  if (!event.shiftKey) {
-    addThread();
-  }
-};
 </script>
 
 <style scoped>
+.box {
+  width: 100%;
+  max-width: 1000px;
+
+  h2 {
+    text-align: center;
+  }
+}
 .thread-form {
   display: flex;
   justify-content: space-between;

@@ -58,6 +58,7 @@ const searchUsers = async () => {
   display: flex;
   align-items: stretch;
   gap: 5px;
+  margin: 0 auto;
 
   .results {
     position: absolute;

@@ -22,16 +22,15 @@
 </template>
 
 <script setup>
-import NewThreadForm from "./new-thread-form/NewThreadForm.vue";
-import ThreadList from "../../shared/threads/ThreadList.vue";
-import { ref, onMounted, computed, watch } from "vue";
+import NewThreadForm from "../forms/NewThreadForm.vue";
+import ThreadList from "../other/ThreadList.vue";
+import { ref, watchEffect, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { userStore } from "../../stores/user.store";
 import axios from "axios";
 
 const user = ref(null);
 const threads = ref([]);
-
 const isFollowing = ref(false);
 
 const setIsFollowing = () => {
@@ -41,10 +40,6 @@ const setIsFollowing = () => {
     );
   }
 };
-
-// depending on what loads first
-watch(user, setIsFollowing);
-watch(userStore.userInfo, setIsFollowing);
 
 const isLoggedUser = computed(() => {
   return user.value?._id === userStore.userInfo.user._id;
@@ -92,13 +87,8 @@ const toggleFollow = async () => {
   }
 };
 
-onMounted(async () => {
-  fetchUserData();
-});
-
-watch(route, () => {
-  fetchUserData();
-});
+watchEffect(setIsFollowing);
+watchEffect(fetchUserData);
 </script>
 
 <style scoped>

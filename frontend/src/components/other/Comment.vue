@@ -31,7 +31,7 @@
 
 <script setup>
 import CommentList from "./CommentList.vue";
-import DeleteThreadBtn from "../DeleteThreadBtn.vue";
+import DeleteThreadBtn from "../buttons/DeleteThreadBtn.vue";
 import { ref, computed } from "vue";
 
 const props = defineProps({

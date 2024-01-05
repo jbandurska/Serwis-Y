@@ -19,7 +19,7 @@ import axios from "axios";
 import { onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import Comment from "./Comment.vue";
-import CommentForm from "./CommentForm.vue";
+import CommentForm from "../forms/CommentForm.vue";
 
 const props = defineProps({
   parentThreadId: String,

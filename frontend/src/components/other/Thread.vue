@@ -1,12 +1,13 @@
 <template>
   <div class="wrapper">
-    <GoBackBtn v-if="isThreadView" class="go-back"></GoBackBtn>
+    <GoBackBtn v-if="isThreadView" class="go-back" />
     <div v-if="thread" class="thread box" :class="{ first: isThreadView }">
       <router-link
         v-if="thread.parentId"
         :to="`/home/threads/${thread.parentId}`"
-        >parent thread</router-link
       >
+        parent thread
+      </router-link>
       <div class="head flex">
         <div v-if="user" class="user">
           <router-link :to="`/home/user/${user._id}`">
@@ -21,16 +22,13 @@
           </router-link>
         </div>
         <p class="small">
-          <QuoteThreadBtn :threadId="thread._id"></QuoteThreadBtn>
+          <QuoteThreadBtn :thread-id="thread._id" />
           {{ date }}
-          <DeleteThreadBtn
-            :thread="thread"
-            @delete="deleteThread"
-          ></DeleteThreadBtn>
+          <DeleteThreadBtn :thread="thread" @delete="deleteThread" />
         </p>
       </div>
 
-      <Quote v-if="thread.quote" :quote-id="thread.quote"></Quote>
+      <Quote v-if="thread.quote" :quote-id="thread.quote" />
 
       <p class="content">
         {{ thread.content }}
@@ -42,10 +40,10 @@
         v-if="isThreadView"
         :parent-thread-id="threadId"
         :nesting-level="0"
-      ></CommentList>
-      <router-link v-else :to="`/home/threads/${thread._id}`"
-        >see thread</router-link
-      >
+      />
+      <router-link v-else :to="`/home/threads/${thread._id}`">
+        see thread
+      </router-link>
     </div>
   </div>
 </template>
@@ -53,11 +51,11 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import CommentList from "./comments/CommentList.vue";
-import Quote from "../../components/quotes/Quote.vue";
-import DeleteThreadBtn from "./DeleteThreadBtn.vue";
-import QuoteThreadBtn from "./QuoteThreadBtn.vue";
-import GoBackBtn from "../GoBackBtn.vue";
+import CommentList from "./CommentList.vue";
+import Quote from "./Quote.vue";
+import DeleteThreadBtn from "../buttons/DeleteThreadBtn.vue";
+import QuoteThreadBtn from "../buttons/QuoteThreadBtn.vue";
+import GoBackBtn from "../buttons/GoBackBtn.vue";
 
 const route = useRoute();
 const router = useRouter();

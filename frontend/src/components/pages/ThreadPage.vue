@@ -40,7 +40,7 @@ watch(
 
 <style scoped>
 .page {
-  padding: 20px;
+  padding: 30px;
   flex-grow: 1;
 
   @media (max-width: 800px) {

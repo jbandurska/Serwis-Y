@@ -1,7 +1,18 @@
 <template>
   <div class="wrapper">
-    <GoBackBtn v-if="isThreadView" class="go-back" />
+    <button
+      v-if="areNewThreads"
+      type="button"
+      class="new-comments-btn"
+      @click="
+        areNewThreads = false;
+        refresh = true;
+      "
+    >
+      Click to see new comments
+    </button>
     <div v-if="thread" class="thread box" :class="{ first: isThreadView }">
+      <GoBackBtn v-if="isThreadView" class="go-back" />
       <router-link
         v-if="thread.parentId"
         :to="`/home/threads/${thread.parentId}`"
@@ -40,6 +51,7 @@
         v-if="isThreadView"
         :parent-thread-id="threadId"
         :nesting-level="0"
+        :refresh="refresh"
       />
       <router-link v-else :to="`/home/threads/${thread._id}`">
         see thread
@@ -49,13 +61,14 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import CommentList from "./CommentList.vue";
 import Quote from "./Quote.vue";
 import DeleteThreadBtn from "../buttons/DeleteThreadBtn.vue";
 import QuoteThreadBtn from "../buttons/QuoteThreadBtn.vue";
 import GoBackBtn from "../buttons/GoBackBtn.vue";
+import { socket } from "../../socket";
 
 const route = useRoute();
 const router = useRouter();
@@ -68,6 +81,9 @@ const props = defineProps({
   deleteThread: Function,
 });
 
+const areNewThreads = ref(false);
+const refresh = ref(false);
+
 const user = computed(() => {
   return props.thread.user;
 });
@@ -79,6 +95,14 @@ const isThreadView = computed(() => {
   return !!route.params.threadId;
 });
 
+socket.on("new-thread", () => {
+  // we're setting refresh value to false again
+  // to be able to trigger the refresh in the child component
+  // after clicking the refresh button
+  refresh.value = false;
+  areNewThreads.value = true;
+});
+
 const deleteThread = () => {
   if (route.path.includes("thread")) {
     router.back();
@@ -86,16 +110,35 @@ const deleteThread = () => {
     props.deleteThread(props.thread._id);
   }
 };
+
+watchEffect(() => {
+  if (threadId.value) {
+    socket.emit("thread-change", threadId.value);
+  }
+});
 </script>
 
 <style scoped>
+.new-comments-btn {
+  background-color: var(--main);
+  box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20px;
+
+  @media (max-width: 800px) {
+    top: 20px;
+    transform: translate(-50%, 0);
+  }
+}
 .wrapper {
   position: relative;
-
   .go-back {
-    position: absolute;
-    left: -70px;
     background-color: var(--main);
+    padding: 5px;
+    margin: 0 auto 10px 0;
   }
 
   .border {

@@ -13,6 +13,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import axios from "axios";
+import { socket } from "../../socket";
 
 const props = defineProps({
   parentThreadId: String,
@@ -39,6 +40,8 @@ const addThread = async () => {
           withCredentials: true,
         }
       );
+
+      socket.emit("new-thread", props.parentThreadId);
 
       props.subthreads.push(response.data.thread);
       content.value = "";

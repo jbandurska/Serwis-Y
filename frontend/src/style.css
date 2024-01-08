@@ -70,6 +70,7 @@ h1 {
   max-width: 1200px;
   align-items: center;
   justify-content: center;
+  width: 100%;
 
   @media (max-width: 1000px) {
     padding-top: 155px;

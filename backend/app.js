@@ -9,6 +9,7 @@ import { connectToDatabase } from "./db/dbConnection.js";
 import { configurePassport } from "./config/passport.js";
 import { authRouter, threadRouter, userRouter } from "./routes/index.js";
 import fileUpload from "express-fileupload";
+import { configureSocketIo } from "./config/socket.js";
 
 dotenv.config();
 const port = process.env.PORT;
@@ -54,6 +55,8 @@ const server = https.createServer(
   },
   app
 );
+
+configureSocketIo(server);
 
 await connectToDatabase();
 

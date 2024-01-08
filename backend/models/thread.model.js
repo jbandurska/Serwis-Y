@@ -24,6 +24,9 @@ const threadSchema = new Schema({
 
 async function deleteFromParent(next) {
   const doc = await this.model.findOne(this.getQuery());
+
+  if (!doc) return next();
+
   const id = doc._id;
   const isMainThread = doc.isMainThread;
 
@@ -46,7 +49,7 @@ async function deleteFromParent(next) {
 async function deleteChildren(next) {
   const doc = await this.model.findOne(this.getQuery());
 
-  if (doc.children?.length) {
+  if (doc?.children?.length) {
     await this.model.deleteMany({
       _id: {
         $in: doc.children,

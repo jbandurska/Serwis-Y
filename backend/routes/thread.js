@@ -224,7 +224,19 @@ router.delete("/:threadId", async (req, res) => {
   const threadId = req.params.threadId;
 
   try {
-    await Thread.deleteOne({ _id: threadId });
+    const thread = await Thread.findOne({ _id: threadId });
+
+    if (!thread) {
+      return res.status(404).json({ message: "Thread not found" });
+    }
+
+    if (thread.user.toString() != req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You cannot delete threads that are not yours" });
+    }
+
+    await Thread.deleteOne({ _id: threadId, user: req.user._id });
 
     return res.status(204).send();
   } catch (error) {

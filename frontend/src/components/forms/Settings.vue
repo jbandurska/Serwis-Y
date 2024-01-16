@@ -28,6 +28,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { userStore } from "../../stores/user.store";
+import imageCompression from "browser-image-compression";
 
 const router = useRouter();
 
@@ -59,7 +60,15 @@ const updateUser = async () => {
   if (login) formData.append("login", login);
   if (email) formData.append("email", email);
   if (password) formData.append("password", password);
-  if (profilePictureFile) formData.append("profilePicture", profilePictureFile);
+  if (profilePictureFile) {
+    const compressedImg = await imageCompression(profilePictureFile, {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 500,
+      useWebWorker: true,
+    });
+
+    formData.append("profilePicture", compressedImg);
+  }
 
   try {
     const response = await axios.put("/api/users/update", formData, {

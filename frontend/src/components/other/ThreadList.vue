@@ -5,6 +5,7 @@
     :thread="thread"
     :delete-thread="deleteThread"
   />
+  <p v-if="!threads.value?.length">No threads here yet!</p>
 </template>
 
 <script setup>
@@ -45,3 +46,10 @@ const deleteThread = (id) => {
 
 watchEffect(getThreads);
 </script>
+
+<style scoped>
+p {
+  text-align: center;
+  font-size: 1.1em;
+}
+</style>

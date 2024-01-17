@@ -1,6 +1,9 @@
 <template>
   <div class="threads">
-    <h2>People you follow posted {{ message }}</h2>
+    <h2 v-if="threads.length">
+      People you follow posted {{ message }} that you haven't seen yet!
+    </h2>
+    <h2 v-else>Follow more users to see more new content!</h2>
     <ThreadListVue v-if="threads.length" :threads="threads" />
   </div>
 </template>
@@ -11,7 +14,7 @@ import { onMounted, ref } from "vue";
 import ThreadListVue from "../other/ThreadList.vue";
 
 const threads = ref([]);
-const message = ref("0 threads this week :(");
+const message = ref("");
 
 const getThreads = async () => {
   try {
@@ -23,9 +26,9 @@ const getThreads = async () => {
 
     const count = threads.value.length;
     if (count == 1) {
-      message.value = `1 thread this week!`;
+      message.value = `1 thread this week`;
     } else {
-      message.value = `${count} threads this week!`;
+      message.value = `${count} threads this week`;
     }
   } catch (error) {
     alert("Something went wrong :(");

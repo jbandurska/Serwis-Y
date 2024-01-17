@@ -20,6 +20,7 @@ const threadSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  seenBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
 async function deleteFromParent(next) {

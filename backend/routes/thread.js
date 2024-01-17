@@ -23,6 +23,9 @@ router.get("/feed", async (req, res) => {
         $gt: lastWeek,
       },
       isMainThread: true,
+      seenBy: {
+        $ne: req.user._id,
+      },
     })
       .populate({
         path: "user",
@@ -44,7 +47,17 @@ router.get("/:threadId", async (req, res) => {
   const threadId = req.params.threadId;
 
   try {
-    const thread = await Thread.findById(threadId).populate({
+    const thread = await Thread.findOneAndUpdate(
+      { _id: threadId },
+      {
+        $addToSet: {
+          seenBy: req.user._id,
+        },
+      },
+      {
+        new: true,
+      }
+    ).populate({
       path: "user",
       select: "login profilePicture",
     });

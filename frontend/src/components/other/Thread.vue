@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <button
-      v-if="areNewThreads"
+      v-if="areNewThreads && isThreadView"
       type="button"
       class="new-comments-btn"
       @click="
@@ -45,7 +45,10 @@
         {{ thread.content }}
       </p>
 
-      <p class="comments small">{{ thread.children?.length }} comments</p>
+      <p class="comments small">
+        {{ thread.seenBy?.length }} views |
+        {{ thread.children?.length }} comments
+      </p>
 
       <CommentList
         v-if="isThreadView"

@@ -12,7 +12,10 @@
       <button v-if="!isLoggedUser" @click="toggleFollow">
         {{ isFollowing ? "Unfollow" : "Follow" }}
       </button>
-      <button v-else type="button" @click="goToSettings">Settings</button>
+      <template v-else>
+        <button type="button" @click="goToSettings">Settings</button>
+        <router-link to="/home/user/following">Following</router-link>
+      </template>
     </div>
     <div class="threads">
       <NewThreadForm v-if="isLoggedUser" :threads="threads"></NewThreadForm>

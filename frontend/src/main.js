@@ -12,6 +12,7 @@ import FeedPage from "./components/pages/FeedPage.vue";
 import UserProfile from "./components/pages/UserProfile.vue";
 import Settings from "./components/forms/Settings.vue";
 import QuoteForm from "./components/forms/QuoteForm.vue";
+import Following from "./components/pages/FollowingPage.vue";
 
 const routes = [
   {
@@ -37,6 +38,10 @@ const routes = [
       {
         path: "user/settings",
         component: Settings,
+      },
+      {
+        path: "user/following",
+        component: Following,
       },
       {
         path: "user/:id",

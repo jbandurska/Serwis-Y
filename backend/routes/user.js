@@ -22,6 +22,29 @@ router.get("/search", async (req, res) => {
   }
 });
 
+router.get("/following", async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId)
+      .select({
+        following: 1,
+      })
+      .populate({
+        path: "following",
+        select: "login profilePicture",
+      });
+
+    res.json({ following: user._doc.following });
+  } catch (error) {
+    if (error.kind == "ObjectId") {
+      return res.status(400).json({ message: "Invalid Id" });
+    }
+
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.get("/:userId", async (req, res) => {
   const userId = req.params.userId;
 

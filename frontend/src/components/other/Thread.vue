@@ -20,18 +20,7 @@
         parent thread
       </router-link>
       <div class="head flex">
-        <div v-if="user" class="user">
-          <router-link :to="`/home/user/${user._id}`">
-            <div class="flex">
-              <img
-                v-if="user.profilePicture"
-                :src="user.profilePicture"
-                alt="profile picture"
-              />
-              <span>{{ user.login }}</span>
-            </div>
-          </router-link>
-        </div>
+        <UserHeader :user="user"></UserHeader>
         <p class="small">
           <QuoteThreadBtn :thread-id="thread._id" />
           {{ date }}
@@ -72,6 +61,7 @@ import DeleteThreadBtn from "../buttons/DeleteThreadBtn.vue";
 import QuoteThreadBtn from "../buttons/QuoteThreadBtn.vue";
 import GoBackBtn from "../buttons/GoBackBtn.vue";
 import { socket } from "../../socket";
+import UserHeader from "./UserHeader.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -185,13 +175,7 @@ watchEffect(() => {
 .comments {
   padding: 0 15px;
 }
-.user {
-  img {
-    width: 50px;
-    aspect-ratio: 1/1;
-    border-radius: 50%;
-  }
-}
+
 .flex {
   display: flex;
   align-items: center;

@@ -24,11 +24,7 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
-  following: {
-    type: Array,
-    required: true,
-    default: [],
-  },
+  following: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
 userSchema.pre("findOneAndDelete", async function (next) {

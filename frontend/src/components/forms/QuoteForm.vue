@@ -1,7 +1,7 @@
 <template>
   <div class="box first">
     <h2>Quote thread</h2>
-    <Quote></Quote>
+    <QuoteComponent></QuoteComponent>
     <ThreadForm
       placeholder="What would you add?"
       :path="`/api/threads/quote/${route.params.quoteId}`"
@@ -15,10 +15,10 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from "vue-router";
-import { userStore } from "../../stores/user.store";
-import Quote from "../other/Quote.vue";
-import ThreadForm from "./ThreadForm.vue";
+import { useRoute, useRouter } from 'vue-router';
+import { userStore } from '../../stores/user.store';
+import QuoteComponent from '../other/QuoteComponent.vue';
+import ThreadForm from './ThreadForm.vue';
 
 const route = useRoute();
 const router = useRouter();

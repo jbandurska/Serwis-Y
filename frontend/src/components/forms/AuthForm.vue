@@ -4,12 +4,7 @@
       <h1>Log in</h1>
       <form @submit.prevent="login">
         <input v-model="loginData.login" required placeholder="Username" />
-        <input
-          type="password"
-          v-model="loginData.password"
-          required
-          placeholder="Password"
-        />
+        <input v-model="loginData.password" type="password" required placeholder="Password" />
         <button type="submit">Log in</button>
 
         <p v-show="loginMsg">{{ loginMsg }}</p>
@@ -20,21 +15,11 @@
       <h1>Register</h1>
       <form @submit.prevent="register">
         <input v-model="registerData.login" required placeholder="Username" />
+        <input v-model="registerData.email" type="email" required placeholder="Email" />
+        <input v-model="registerData.password" type="password" required placeholder="Password" />
         <input
-          type="email"
-          v-model="registerData.email"
-          required
-          placeholder="Email"
-        />
-        <input
-          type="password"
-          v-model="registerData.password"
-          required
-          placeholder="Password"
-        />
-        <input
-          type="password"
           v-model="registerData.confirmPassword"
+          type="password"
           required
           placeholder="Confirm password"
         />
@@ -47,51 +32,51 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import axios from "axios";
-import { userStore } from "../../stores/user.store";
+import { ref } from 'vue';
+import axios from 'axios';
+import { userStore } from '../../stores/user.store';
 
 const loginData = ref({
-  login: "",
-  password: "",
+  login: '',
+  password: ''
 });
 
 const registerData = ref({
-  login: "",
-  password: "",
-  confirmPassword: "",
-  email: "",
+  login: '',
+  password: '',
+  confirmPassword: '',
+  email: ''
 });
 
-const loginMsg = ref("");
-const registerMsg = ref("");
+const loginMsg = ref('');
+const registerMsg = ref('');
 
 const login = async () => {
   try {
-    const response = await axios.post("/api/login", loginData.value, {
-      withCredentials: true,
+    const response = await axios.post('/api/login', loginData.value, {
+      withCredentials: true
     });
     userStore.setUserInfo(response.data.user);
   } catch (error) {
     loginMsg.value = error.response.data.message;
-    registerMsg.value = "";
+    registerMsg.value = '';
   }
 };
 
 const register = async () => {
   if (registerData.value.password !== registerData.value.confirmPassword) {
-    alert("Passwords do not match");
+    alert('Passwords do not match');
     return;
   }
 
   try {
-    const response = await axios.post("/api/register", registerData.value, {
-      withCredentials: true,
+    const response = await axios.post('/api/register', registerData.value, {
+      withCredentials: true
     });
     userStore.setUserInfo(response.data.user);
   } catch (error) {
     registerMsg.value = error.response.data.message;
-    loginMsg.value = "";
+    loginMsg.value = '';
   }
 };
 </script>

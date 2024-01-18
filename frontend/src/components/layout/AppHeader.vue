@@ -3,16 +3,12 @@
     <router-link to="/home" class="small">
       <div class="logo">Y</div>
     </router-link>
-    <Search class="search-bar"></Search>
+    <SearchBar class="search-bar"></SearchBar>
     <div v-if="user" class="user small">
       <router-link :to="`/home/user/${user._id}`">
         <div class="flex">
           <span>{{ user.login }}</span>
-          <img
-            v-if="user.profilePicture"
-            :src="user.profilePicture"
-            alt="profile picture"
-          />
+          <img v-if="user.profilePicture" :src="user.profilePicture" alt="profile picture" />
         </div>
       </router-link>
     </div>
@@ -20,9 +16,9 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { userStore } from "../../stores/user.store";
-import Search from "../other/Search.vue";
+import { computed } from 'vue';
+import { userStore } from '../../stores/user.store';
+import SearchBar from '../other/SearchBar.vue';
 
 const user = computed(() => {
   return userStore.userInfo.user;
@@ -63,7 +59,9 @@ header {
   transition: 0.25s;
 
   &:hover {
-    text-shadow: 3px 0px 7px var(--main), -3px 0px 7px var(--main),
+    text-shadow:
+      3px 0px 7px var(--main),
+      -3px 0px 7px var(--main),
       0px 4px 7px var(--main);
     color: var(--text);
   }

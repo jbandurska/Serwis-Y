@@ -11,20 +11,20 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
-import axios from "axios";
+import { ref, watch } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
   placeholder: String,
   path: String,
-  cb: Function,
+  cb: Function
 });
 
-const content = ref("");
+const content = ref('');
 const textarea = ref(null);
 
 watch(content, () => {
-  textarea.value.style.height = textarea.value.scrollHeight + "px";
+  textarea.value.style.height = textarea.value.scrollHeight + 'px';
 });
 
 const addThread = async () => {
@@ -34,14 +34,14 @@ const addThread = async () => {
       const response = await axios.post(
         props.path,
         {
-          content: content.value,
+          content: content.value
         },
         {
-          withCredentials: true,
+          withCredentials: true
         }
       );
 
-      content.value = "";
+      content.value = '';
       props.cb(response.data.thread);
     } catch (error) {
       console.error(error);

@@ -1,14 +1,14 @@
 <script setup>
-import axios from "axios";
-import { userStore } from "../../stores/user.store";
+import axios from 'axios';
+import { userStore } from '../../stores/user.store';
 
 const logout = async () => {
   try {
     await axios.post(
-      "/api/logout",
+      '/api/logout',
       {},
       {
-        withCredentials: true,
+        withCredentials: true
       }
     );
     userStore.setUserInfo();

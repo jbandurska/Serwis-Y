@@ -17,29 +17,26 @@
       {{ thread.content }}
     </p>
 
-    <router-link
-      v-if="thread._id && !isForm"
-      :to="`/home/threads/${thread._id}`"
-      class="original"
+    <router-link v-if="thread._id && !isForm" :to="`/home/threads/${thread._id}`" class="original"
       >see original thread</router-link
     >
   </div>
 </template>
 
 <script setup>
-import { ref, watchEffect, computed } from "vue";
-import { useRoute } from "vue-router";
-import axios from "axios";
+import { ref, watchEffect, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import axios from 'axios';
 
 const props = defineProps({
-  quoteId: String,
+  quoteId: String
 });
 
 const route = useRoute();
 const thread = ref({});
 
 const isForm = computed(() => {
-  return route.path.includes("quote");
+  return route.path.includes('quote');
 });
 
 const getQuotedThread = async () => {
@@ -47,13 +44,13 @@ const getQuotedThread = async () => {
 
   try {
     const response = await axios.get(`/api/threads/${quoteId}`, {
-      withCredentials: true,
+      withCredentials: true
     });
 
     thread.value = response.data.thread;
   } catch (error) {
     if (error.response.status === 404) {
-      thread.value.content = "Content not available";
+      thread.value.content = 'Content not available';
       return;
     }
 

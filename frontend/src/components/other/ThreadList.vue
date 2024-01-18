@@ -1,5 +1,5 @@
 <template>
-  <Thread
+  <ThreadComponent
     v-for="thread in threads.value"
     :key="thread._id"
     :thread="thread"
@@ -9,13 +9,13 @@
 </template>
 
 <script setup>
-import { watchEffect } from "vue";
-import { useRoute } from "vue-router";
-import Thread from "./Thread.vue";
-import axios from "axios";
+import { watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
+import ThreadComponent from './ThreadComponent.vue';
+import axios from 'axios';
 
 const props = defineProps({
-  threads: Array,
+  threads: Array
 });
 
 const route = useRoute();
@@ -28,12 +28,12 @@ const getThreads = async () => {
   if (id) {
     try {
       const response = await axios.get(`/api/threads/user/${id}`, {
-        withCredentials: true,
+        withCredentials: true
       });
 
       threads.value = response.data.threads;
     } catch (error) {
-      alert("Something went wrong :(");
+      alert('Something went wrong :(');
     }
   } else {
     threads.value = props.threads;

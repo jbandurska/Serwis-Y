@@ -1,14 +1,14 @@
-import { reactive } from "vue";
-import axios from "axios";
+import { reactive } from 'vue';
+import axios from 'axios';
 
 const userInfo = reactive({
   user: {},
-  isLogged: false,
+  isLogged: false
 });
 
 const checkIfAuthenticated = async () => {
-  const response = await axios.get("/api/check-session", {
-    withCredentials: true,
+  const response = await axios.get('/api/check-session', {
+    withCredentials: true
   });
 
   const { isAuthenticated, user } = response.data;
@@ -25,5 +25,5 @@ const setUserInfo = (user) => {
 export const userStore = {
   userInfo,
   checkIfAuthenticated,
-  setUserInfo,
+  setUserInfo
 };

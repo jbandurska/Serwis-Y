@@ -13,10 +13,7 @@
     </button>
     <div v-if="thread" class="thread box" :class="{ first: isThreadView }">
       <GoBackBtn v-if="isThreadView" class="go-back" />
-      <router-link
-        v-if="thread.parentId"
-        :to="`/home/threads/${thread.parentId}`"
-      >
+      <router-link v-if="thread.parentId" :to="`/home/threads/${thread.parentId}`">
         parent thread
       </router-link>
       <div class="head flex">
@@ -28,15 +25,14 @@
         </p>
       </div>
 
-      <Quote v-if="thread.quote" :quote-id="thread.quote" />
+      <QuoteComponent v-if="thread.quote" :quote-id="thread.quote" />
 
       <p class="content">
         {{ thread.content }}
       </p>
 
       <p class="comments small">
-        {{ thread.seenBy?.length }} views |
-        {{ thread.children?.length }} comments
+        {{ thread.seenBy?.length }} views | {{ thread.children?.length }} comments
       </p>
 
       <CommentList
@@ -45,23 +41,21 @@
         :nesting-level="0"
         :refresh="refresh"
       />
-      <router-link v-else :to="`/home/threads/${thread._id}`">
-        see thread
-      </router-link>
+      <router-link v-else :to="`/home/threads/${thread._id}`"> see thread </router-link>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watchEffect } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import CommentList from "./CommentList.vue";
-import Quote from "./Quote.vue";
-import DeleteThreadBtn from "../buttons/DeleteThreadBtn.vue";
-import QuoteThreadBtn from "../buttons/QuoteThreadBtn.vue";
-import GoBackBtn from "../buttons/GoBackBtn.vue";
-import { socket } from "../../socket";
-import UserHeader from "./UserHeader.vue";
+import { ref, computed, watchEffect } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import CommentList from './CommentList.vue';
+import QuoteComponent from './QuoteComponent.vue';
+import DeleteThreadBtn from '../buttons/DeleteThreadBtn.vue';
+import QuoteThreadBtn from '../buttons/QuoteThreadBtn.vue';
+import GoBackBtn from '../buttons/GoBackBtn.vue';
+import { socket } from '../../socket';
+import UserHeader from './UserHeader.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -71,7 +65,7 @@ const threadId = computed(() => {
 
 const props = defineProps({
   thread: Object,
-  deleteThread: Function,
+  deleteThread: Function
 });
 
 const areNewThreads = ref(false);
@@ -81,14 +75,15 @@ const user = computed(() => {
   return props.thread.user;
 });
 const date = computed(() => {
-  if (props.thread?.createdAt)
-    return new Date(props.thread.createdAt).toLocaleString();
+  if (props.thread?.createdAt) return new Date(props.thread.createdAt).toLocaleString();
+
+  return '';
 });
 const isThreadView = computed(() => {
   return !!route.params.threadId;
 });
 
-socket.on("new-thread", () => {
+socket.on('new-thread', () => {
   // we're setting refresh value to false again
   // to be able to trigger the refresh in the child component
   // after clicking the refresh button
@@ -97,7 +92,7 @@ socket.on("new-thread", () => {
 });
 
 const deleteThread = () => {
-  if (route.path.includes("thread")) {
+  if (route.path.includes('thread')) {
     router.back();
   } else {
     props.deleteThread(props.thread._id);
@@ -106,7 +101,7 @@ const deleteThread = () => {
 
 watchEffect(() => {
   if (threadId.value) {
-    socket.emit("thread-change", threadId.value);
+    socket.emit('thread-change', threadId.value);
   }
 });
 </script>

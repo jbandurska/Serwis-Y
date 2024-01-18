@@ -5,14 +5,14 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { userStore } from "../../stores/user.store";
-import axios from "axios";
+import { computed } from 'vue';
+import { userStore } from '../../stores/user.store';
+import axios from 'axios';
 
-const emit = defineEmits(["delete"]);
+const emit = defineEmits(['delete']);
 
 const props = defineProps({
-  thread: Object,
+  thread: Object
 });
 
 const isLoggedUser = computed(() => {
@@ -22,10 +22,10 @@ const isLoggedUser = computed(() => {
 const deleteThread = async () => {
   try {
     await axios.delete(`/api/threads/${props.thread._id}`, {
-      withCredentials: true,
+      withCredentials: true
     });
 
-    emit("delete");
+    emit('delete');
   } catch (error) {
     console.error(error);
   }

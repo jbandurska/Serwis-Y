@@ -4,7 +4,7 @@
     <button @click="searchUsers">
       <img src="/src/assets/search.svg" alt="" />
     </button>
-    <div class="results" v-if="searchResults.length">
+    <div v-if="searchResults.length" class="results">
       <ul>
         <li v-for="user in searchResults" :key="user._id">
           <router-link :to="`/home/user/${user._id}`">
@@ -18,11 +18,11 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import axios from 'axios';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
-const searchKey = ref("");
+const searchKey = ref('');
 const searchResults = ref([]);
 
 const route = useRoute();
@@ -36,15 +36,12 @@ watch(route, close);
 const searchUsers = async () => {
   if (searchKey.value) {
     try {
-      const response = await axios.get(
-        `/api/users/search?key=${searchKey.value}`,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`/api/users/search?key=${searchKey.value}`, {
+        withCredentials: true
+      });
       searchResults.value = response.data;
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error);
     }
   }
 };

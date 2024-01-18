@@ -1,14 +1,14 @@
 <template>
   <div class="page">
-    <Thread v-if="thread._id" :thread="thread"></Thread>
+    <ThreadComponent v-if="thread._id" :thread="thread"></ThreadComponent>
   </div>
 </template>
 
 <script setup>
-import Thread from "../other/Thread.vue";
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
-import axios from "axios";
+import ThreadComponent from '../other/ThreadComponent.vue';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import axios from 'axios';
 
 const thread = ref({});
 const route = useRoute();
@@ -18,7 +18,7 @@ const getThread = async () => {
 
   try {
     const response = await axios.get(`/api/threads/${threadId}`, {
-      withCredentials: true,
+      withCredentials: true
     });
 
     thread.value = response.data.thread;
@@ -33,7 +33,7 @@ watch(
     getThread();
   },
   {
-    immediate: true,
+    immediate: true
   }
 );
 </script>

@@ -1,12 +1,12 @@
 <template>
   <div class="list" :class="{ 'odd-list': nestingLevel % 2 }">
-    <Comment
+    <CommentComponent
       v-for="subthread in subthreads"
       :key="subthread._id"
       :thread="subthread"
       :nesting-level="nestingLevel"
       @delete="getSubthreads"
-    ></Comment>
+    ></CommentComponent>
     <ThreadForm
       placeholder="Comment"
       :path="`/api/threads/${parentThreadId}`"
@@ -21,20 +21,20 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { socket } from "../../socket";
-import { onMounted, ref, watch, watchEffect } from "vue";
-import { useRoute } from "vue-router";
-import Comment from "./Comment.vue";
-import ThreadForm from "../forms/ThreadForm.vue";
+import axios from 'axios';
+import { socket } from '../../socket';
+import { onMounted, ref, watch, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
+import CommentComponent from './CommentComponent.vue';
+import ThreadForm from '../forms/ThreadForm.vue';
 
 const props = defineProps({
   parentThreadId: String,
   nestingLevel: Number,
   refresh: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 });
 
 const route = useRoute();
@@ -43,12 +43,9 @@ const subthreads = ref([]);
 
 const getSubthreads = async () => {
   try {
-    const response = await axios.get(
-      `/api/threads/${props.parentThreadId}/subthreads`,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axios.get(`/api/threads/${props.parentThreadId}/subthreads`, {
+      withCredentials: true
+    });
 
     subthreads.value = response.data.subthreads;
   } catch (error) {

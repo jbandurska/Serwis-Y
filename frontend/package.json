@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "lint": "eslint . --fix",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "format": "prettier --write src/",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -17,10 +18,12 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@rushstack/eslint-patch": "^1.7.0",
     "@vitejs/plugin-vue": "^4.5.2",
-    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/eslint-config-prettier": "^9.0.0",
     "eslint": "^8.56.0",
     "eslint-plugin-vue": "^9.19.2",
+    "prettier": "^3.2.4",
     "vite": "^5.0.8"
   }
 }

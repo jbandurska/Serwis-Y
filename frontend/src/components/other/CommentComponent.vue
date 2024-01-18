@@ -5,21 +5,16 @@
         {{ thread.user.login }}
       </router-link>
       <p class="small">
-        <router-link :to="`/home/threads/${thread._id}`"
-          >thread page</router-link
-        >
+        <router-link :to="`/home/threads/${thread._id}`">thread page</router-link>
         {{ date }}
-        <DeleteThreadBtn
-          :thread="thread"
-          @delete="$emit('delete')"
-        ></DeleteThreadBtn>
+        <DeleteThreadBtn :thread="thread" @delete="$emit('delete')"></DeleteThreadBtn>
       </p>
     </div>
     <p>
       {{ thread.content }}
     </p>
     <button type="button" @click="toggleThread">
-      {{ isThreadVisible ? "hide thread" : "show thread" }}
+      {{ isThreadVisible ? 'hide thread' : 'show thread' }}
     </button>
     <CommentList
       v-if="isThreadVisible"
@@ -30,18 +25,19 @@
 </template>
 
 <script setup>
-import CommentList from "./CommentList.vue";
-import DeleteThreadBtn from "../buttons/DeleteThreadBtn.vue";
-import { ref, computed } from "vue";
+import CommentList from './CommentList.vue';
+import DeleteThreadBtn from '../buttons/DeleteThreadBtn.vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
   thread: Object,
-  nestingLevel: Number,
+  nestingLevel: Number
 });
 
 const date = computed(() => {
-  if (props.thread?.createdAt)
-    return new Date(props.thread.createdAt).toLocaleString();
+  if (props.thread?.createdAt) return new Date(props.thread.createdAt).toLocaleString();
+
+  return '';
 });
 
 const isThreadVisible = ref(false);

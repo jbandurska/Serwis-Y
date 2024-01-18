@@ -2,11 +2,7 @@
   <div v-if="user" class="user">
     <router-link :to="`/home/user/${user._id}`">
       <div class="flex">
-        <img
-          v-if="user.profilePicture"
-          :src="user.profilePicture"
-          alt="profile picture"
-        />
+        <img v-if="user.profilePicture" :src="user.profilePicture" alt="profile picture" />
         <span>{{ user.login }}</span>
       </div>
     </router-link>
@@ -15,7 +11,7 @@
 
 <script setup>
 defineProps({
-  user: Object,
+  user: Object
 });
 </script>
 

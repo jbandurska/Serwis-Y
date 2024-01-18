@@ -1,25 +1,23 @@
 <template>
   <div class="threads">
-    <h2 v-if="threads.length">
-      People you follow posted {{ message }} that you haven't seen yet!
-    </h2>
+    <h2 v-if="threads.length">People you follow posted {{ message }} that you haven't seen yet!</h2>
     <h2 v-else>Follow more users to see more new content!</h2>
     <ThreadListVue v-if="threads.length" :threads="threads" />
   </div>
 </template>
 
 <script setup>
-import axios from "axios";
-import { onMounted, ref } from "vue";
-import ThreadListVue from "../other/ThreadList.vue";
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+import ThreadListVue from '../other/ThreadList.vue';
 
 const threads = ref([]);
-const message = ref("");
+const message = ref('');
 
 const getThreads = async () => {
   try {
     const response = await axios.get(`/api/threads/feed`, {
-      withCredentials: true,
+      withCredentials: true
     });
 
     threads.value = response.data.threads;
@@ -31,7 +29,7 @@ const getThreads = async () => {
       message.value = `${count} threads this week`;
     }
   } catch (error) {
-    alert("Something went wrong :(");
+    alert('Something went wrong :(');
   }
 };
 

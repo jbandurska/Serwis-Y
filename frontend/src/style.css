@@ -125,7 +125,7 @@ input {
   color: inherit;
 }
 
-input[type="file"] {
+input[type='file'] {
   background-color: transparent;
   border: none;
 }

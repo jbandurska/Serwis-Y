@@ -2,15 +2,11 @@
   <div v-if="user" class="wrapper">
     <div class="card box first">
       <div class="info">
-        <img
-          v-show="user.profilePicture"
-          :src="user.profilePicture"
-          alt="profile picture"
-        />
+        <img v-show="user.profilePicture" :src="user.profilePicture" alt="profile picture" />
         <h2>{{ user.login }}</h2>
       </div>
       <button v-if="!isLoggedUser" @click="toggleFollow">
-        {{ isFollowing ? "Unfollow" : "Follow" }}
+        {{ isFollowing ? 'Unfollow' : 'Follow' }}
       </button>
       <template v-else>
         <button type="button" @click="goToSettings">Settings</button>
@@ -28,23 +24,23 @@
             threads.value.unshift({
               ...newThread,
               commentsCount: 0,
-              user: userStore.userInfo.user || {},
+              user: userStore.userInfo.user || {}
             });
           }
         "
-      ></ThreadForm>
-      <ThreadList :threads="threads"></ThreadList>
+      />
+      <ThreadList :threads="threads" />
     </div>
   </div>
 </template>
 
 <script setup>
-import ThreadForm from "../forms/ThreadForm.vue";
-import ThreadList from "../other/ThreadList.vue";
-import { ref, watchEffect, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { userStore } from "../../stores/user.store";
-import axios from "axios";
+import ThreadForm from '../forms/ThreadForm.vue';
+import ThreadList from '../other/ThreadList.vue';
+import { ref, watchEffect, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { userStore } from '../../stores/user.store';
+import axios from 'axios';
 
 const user = ref(null);
 const threads = ref([]);
@@ -52,9 +48,7 @@ const isFollowing = ref(false);
 
 const setIsFollowing = () => {
   if (user.value && userStore.userInfo.user.following) {
-    isFollowing.value = userStore.userInfo.user.following.includes(
-      user.value._id
-    );
+    isFollowing.value = userStore.userInfo.user.following.includes(user.value._id);
   }
 };
 
@@ -66,14 +60,14 @@ const route = useRoute();
 const router = useRouter();
 
 const goToSettings = () => {
-  router.push("/home/user/settings");
+  router.push('/home/user/settings');
 };
 
 const fetchUserData = async () => {
   const userId = route.params.id;
   try {
     const response = await axios.get(`/api/users/${userId}`, {
-      withCredentials: true,
+      withCredentials: true
     });
 
     user.value = response.data.user;
@@ -87,11 +81,11 @@ const toggleFollow = async () => {
   try {
     if (isFollowing.value) {
       await axios.post(`/api/users/${userId}/unfollow`, null, {
-        withCredentials: true,
+        withCredentials: true
       });
     } else {
       await axios.post(`/api/users/${userId}/follow`, null, {
-        withCredentials: true,
+        withCredentials: true
       });
     }
 

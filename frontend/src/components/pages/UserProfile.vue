@@ -18,14 +18,28 @@
       </template>
     </div>
     <div class="threads">
-      <NewThreadForm v-if="isLoggedUser" :threads="threads"></NewThreadForm>
+      <ThreadForm
+        v-if="isLoggedUser"
+        class="box"
+        placeholder="What's on your mind?"
+        path="/api/threads"
+        :cb="
+          (newThread) => {
+            threads.value.unshift({
+              ...newThread,
+              commentsCount: 0,
+              user: userStore.userInfo.user || {},
+            });
+          }
+        "
+      ></ThreadForm>
       <ThreadList :threads="threads"></ThreadList>
     </div>
   </div>
 </template>
 
 <script setup>
-import NewThreadForm from "../forms/NewThreadForm.vue";
+import ThreadForm from "../forms/ThreadForm.vue";
 import ThreadList from "../other/ThreadList.vue";
 import { ref, watchEffect, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";

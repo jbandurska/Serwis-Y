@@ -3,7 +3,7 @@
     <textarea
       ref="textarea"
       v-model="content"
-      placeholder="Comment"
+      :placeholder="placeholder"
       @keyup.enter.exact="addThread"
     ></textarea>
     <button @click="addThread">Post</button>
@@ -13,11 +13,11 @@
 <script setup>
 import { ref, watch } from "vue";
 import axios from "axios";
-import { socket } from "../../socket";
 
 const props = defineProps({
-  parentThreadId: String,
-  subthreads: Array,
+  placeholder: String,
+  path: String,
+  cb: Function,
 });
 
 const content = ref("");
@@ -32,7 +32,7 @@ const addThread = async () => {
   if (content.value) {
     try {
       const response = await axios.post(
-        `/api/threads/${props.parentThreadId}`,
+        props.path,
         {
           content: content.value,
         },
@@ -41,10 +41,8 @@ const addThread = async () => {
         }
       );
 
-      socket.emit("new-thread", props.parentThreadId);
-
-      props.subthreads.push(response.data.thread);
       content.value = "";
+      props.cb(response.data.thread);
     } catch (error) {
       console.error(error);
     }
@@ -77,7 +75,6 @@ const addThread = async () => {
 
   @media (max-width: 1000px) {
     flex-direction: column;
-    gap: 2px;
 
     button {
       width: auto;

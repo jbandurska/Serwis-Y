@@ -7,19 +7,26 @@
       :nesting-level="nestingLevel"
       @delete="getSubthreads"
     ></Comment>
-    <CommentForm
-      :parentThreadId="parentThreadId"
-      :subthreads="subthreads"
-    ></CommentForm>
+    <ThreadForm
+      placeholder="Comment"
+      :path="`/api/threads/${parentThreadId}`"
+      :cb="
+        (newThread) => {
+          socket.emit('new-thread', parentThreadId);
+          subthreads.push(newThread);
+        }
+      "
+    ></ThreadForm>
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
+import { socket } from "../../socket";
 import { onMounted, ref, watch, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import Comment from "./Comment.vue";
-import CommentForm from "../forms/CommentForm.vue";
+import ThreadForm from "../forms/ThreadForm.vue";
 
 const props = defineProps({
   parentThreadId: String,

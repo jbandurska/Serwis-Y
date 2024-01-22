@@ -7,34 +7,15 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import ThreadListVue from '../other/ThreadList.vue';
+import { feedStore } from '../../stores/feed.store';
 
-const threads = ref([]);
-const message = ref('');
-
-const getThreads = async () => {
-  try {
-    const response = await axios.get(`/api/threads/feed`, {
-      withCredentials: true
-    });
-
-    threads.value = response.data.threads;
-
-    const count = threads.value.length;
-    if (count == 1) {
-      message.value = `1 thread this week`;
-    } else {
-      message.value = `${count} threads this week`;
-    }
-  } catch (error) {
-    alert('Something went wrong :(');
-  }
-};
+const threads = feedStore.feed;
+const message = feedStore.feedMessage;
 
 onMounted(() => {
-  getThreads();
+  feedStore.getFeed();
 });
 </script>
 

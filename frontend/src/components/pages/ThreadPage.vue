@@ -23,7 +23,7 @@ const getThread = async () => {
 
     thread.value = response.data.thread;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 

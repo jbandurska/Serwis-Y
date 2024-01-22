@@ -26,6 +26,8 @@
               commentsCount: 0,
               user: userStore.userInfo.user || {}
             });
+
+            socket.emit('new-thread', userStore.userInfo.user._id);
           }
         "
       />
@@ -41,6 +43,7 @@ import { ref, watchEffect, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { userStore } from '../../stores/user.store';
 import axios from 'axios';
+import { socket } from '../../socket';
 
 const user = ref(null);
 const threads = ref([]);

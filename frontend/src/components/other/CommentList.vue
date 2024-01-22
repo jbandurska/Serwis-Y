@@ -12,7 +12,7 @@
       :path="`/api/threads/${parentThreadId}`"
       :cb="
         (newThread) => {
-          socket.emit('new-thread', parentThreadId);
+          socket.emit('new-subthread', parentThreadId);
           subthreads.push(newThread);
         }
       "
@@ -49,7 +49,7 @@ const getSubthreads = async () => {
 
     subthreads.value = response.data.subthreads;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 

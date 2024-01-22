@@ -83,7 +83,7 @@ const isThreadView = computed(() => {
   return !!route.params.threadId;
 });
 
-socket.on('new-thread', () => {
+socket.on('new-subthread', () => {
   // we're setting refresh value to false again
   // to be able to trigger the refresh in the child component
   // after clicking the refresh button

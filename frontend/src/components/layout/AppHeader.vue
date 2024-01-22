@@ -1,7 +1,8 @@
 <template>
   <header>
-    <router-link to="/home" class="small">
+    <router-link to="/home" class="small logo-link" @click="onLogoClick">
       <div class="logo">Y</div>
+      <NotificationComponent class="notification" :count="count" />
     </router-link>
     <SearchBar class="search-bar"></SearchBar>
     <div v-if="user" class="user small">
@@ -16,13 +17,34 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { userStore } from '../../stores/user.store';
 import SearchBar from '../other/SearchBar.vue';
+import NotificationComponent from '../other/NotificationComponent.vue';
+import { socket } from '../../socket';
+import { feedStore } from '../../stores/feed.store';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const user = computed(() => {
   return userStore.userInfo.user;
 });
+
+const count = ref(0);
+
+socket.on('new-thread', () => {
+  count.value++;
+});
+
+const onLogoClick = () => {
+  // we're checking if we stay on the same page not to make
+  // two requests on page change (onMounted in FeedPage)
+  if (route.fullPath === '/home' && count.value > 0) {
+    feedStore.getFeed();
+  }
+  count.value = 0;
+};
 </script>
 
 <style scoped>
@@ -37,6 +59,16 @@ header {
   position: fixed;
   top: 0;
   z-index: 10;
+}
+
+.logo-link {
+  position: relative;
+
+  .notification {
+    position: absolute;
+    top: 0;
+    left: 75%;
+  }
 }
 
 .user {

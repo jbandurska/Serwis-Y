@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <input v-model="searchKey" type="text" placeholder="Search" />
+    <input v-model="searchKey" type="text" placeholder="Search" @keyup.enter="searchUsers" />
     <button @click="searchUsers">
       <img src="/src/assets/search.svg" alt="" />
     </button>

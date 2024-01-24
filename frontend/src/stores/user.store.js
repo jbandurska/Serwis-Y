@@ -1,4 +1,4 @@
-import { reactive } from 'vue';
+import { reactive, watchEffect } from 'vue';
 import axios from 'axios';
 import { socket } from '../socket';
 
@@ -32,6 +32,14 @@ const setUserInfo = (user) => {
 
   initiateNotificationsSocket(user);
 };
+
+watchEffect(() => {
+  if (userInfo.isLogged) {
+    socket.connect();
+  } else {
+    socket.disconnect();
+  }
+});
 
 export const userStore = {
   userInfo,

@@ -58,6 +58,8 @@ const configurePassport = (app) => {
     req.passport = passport;
     next();
   });
+
+  return passport;
 };
 
 export { configurePassport };

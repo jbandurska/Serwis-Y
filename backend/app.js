@@ -4,7 +4,6 @@ import https from "https";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import session from "express-session";
 import { connectToDatabase } from "./db/dbConnection.js";
 import { configurePassport } from "./config/passport.js";
 import { authRouter, threadRouter, userRouter } from "./routes/index.js";
@@ -24,21 +23,14 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  session({
-    name: "session",
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: true,
-      sameSite: "None",
-    },
-  })
-);
+
+const sessionMiddleware = (await import("./middleware/sessionMiddleware.js"))
+  .sessionMiddleware;
+
+app.use(sessionMiddleware);
 app.use(fileUpload());
 
-configurePassport(app);
+const passport = configurePassport(app);
 
 app.use("/api", authRouter);
 app.use("/api/users", userRouter);
@@ -56,7 +48,7 @@ const server = https.createServer(
   app
 );
 
-configureSocketIo(server);
+await configureSocketIo(server, passport);
 
 await connectToDatabase();
 

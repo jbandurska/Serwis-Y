@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 
-const configureSocketIo = (server) => {
+const configureSocketIo = async (server, passport) => {
   const io = new Server(server, {
     cors: {
       origin: process.env.FRONTEND_URL,
@@ -8,9 +8,27 @@ const configureSocketIo = (server) => {
     },
   });
 
+  const wrap = (middleware) => (socket, next) =>
+    middleware(socket.request, {}, next);
+
+  const sessionMiddleware = (await import("../middleware/sessionMiddleware.js"))
+    .sessionMiddleware;
+  io.use(wrap(sessionMiddleware));
+  io.use(wrap(passport.initialize()));
+  io.use(wrap(passport.session()));
+
+  io.use((socket, next) => {
+    if (socket.request.user) {
+      next();
+    } else {
+      next(new Error("Unauthorized!"));
+    }
+  });
+
   io.on("connection", (socket) => {
     // for new threads by people that we follow
-    socket.on("new-thread", (userId) => {
+    socket.on("new-thread", () => {
+      const userId = socket.request.user._id;
       socket.broadcast.to(`user:${userId}`).emit("new-thread");
     });
 

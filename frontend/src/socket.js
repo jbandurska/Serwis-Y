@@ -1,4 +1,7 @@
 import { io } from 'socket.io-client';
 import { environment } from './env';
 
-export const socket = io(environment.backendUrl);
+export const socket = io(environment.backendUrl, {
+  autoConnect: false,
+  withCredentials: true
+});

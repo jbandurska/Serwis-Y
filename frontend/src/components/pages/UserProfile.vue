@@ -27,7 +27,7 @@
               user: userStore.userInfo.user || {}
             });
 
-            socket.emit('new-thread', userStore.userInfo.user._id);
+            socket.emit('new-thread');
           }
         "
       />

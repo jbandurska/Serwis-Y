@@ -33,7 +33,6 @@ userSchema.pre("findOneAndDelete", async function (next) {
   if (doc) {
     await Thread.deleteMany({
       user: doc._id,
-      isMainThread: true,
     });
   }
 

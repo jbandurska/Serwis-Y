@@ -67,6 +67,7 @@ threadSchema.pre("deleteOne", function (next) {
 });
 threadSchema.pre("deleteMany", function (next) {
   deleteChildren.bind(this)(next);
+  deleteFromParent.bind(this)(next);
 });
 
 export default model("Thread", threadSchema);

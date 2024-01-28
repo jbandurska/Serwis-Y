@@ -35,12 +35,7 @@
         {{ thread.seenBy?.length }} views | {{ thread.children?.length }} comments
       </p>
 
-      <CommentList
-        v-if="isThreadView"
-        :parent-thread-id="threadId"
-        :nesting-level="0"
-        :refresh="refresh"
-      />
+      <CommentList v-if="isThreadView" :parent-thread-id="threadId" :refresh="refresh" />
       <router-link v-else :to="`/home/threads/${thread._id}`"> see thread </router-link>
     </div>
   </div>

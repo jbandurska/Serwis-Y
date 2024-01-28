@@ -1,21 +1,25 @@
 <template>
   <div class="threads">
-    <h2 v-if="threads.length">People you follow posted {{ message }} that you haven't seen yet!</h2>
-    <h2 v-else>Follow more users to see more new content!</h2>
-    <ThreadListVue v-if="threads.length" :threads="threads" />
+    <h2 v-if="threads.length < 1">Follow more users to see more content!</h2>
+    <h2 v-else>Welcome to your feed!</h2>
+    <ThreadList v-if="threads.length" :threads="threads" />
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import ThreadListVue from '../other/ThreadList.vue';
-import { feedStore } from '../../stores/feed.store';
+import { onMounted, onUnmounted, ref } from 'vue';
+import ThreadList from '../other/ThreadList.vue';
+import { paginationService } from '../../services/PaginationService';
+import { feedService } from '../../services/FeedService';
 
-const threads = feedStore.feed;
-const message = feedStore.feedMessage;
+const threads = ref([]);
 
 onMounted(() => {
-  feedStore.getFeed();
+  paginationService.init(threads, '/api/threads/feed', feedService.onNewThreads);
+});
+
+onUnmounted(() => {
+  paginationService.destroy();
 });
 </script>
 

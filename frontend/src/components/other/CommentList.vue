@@ -1,12 +1,5 @@
 <template>
-  <div class="list" :class="{ 'odd-list': nestingLevel % 2 }">
-    <CommentComponent
-      v-for="subthread in subthreads"
-      :key="subthread._id"
-      :thread="subthread"
-      :nesting-level="nestingLevel"
-      @delete="getSubthreads"
-    ></CommentComponent>
+  <div class="list">
     <ThreadForm
       placeholder="Comment"
       :path="`/api/threads/${parentThreadId}`"
@@ -17,52 +10,47 @@
         }
       "
     ></ThreadForm>
+    <CommentComponent
+      v-for="subthread in subthreads"
+      :key="subthread._id"
+      :id="`thread:${subthread._id}`"
+      :thread="subthread"
+      @delete="paginationService.getNewestThreads()"
+    ></CommentComponent>
   </div>
 </template>
 
 <script setup>
-import axios from 'axios';
 import { socket } from '../../socket';
-import { onMounted, ref, watch, watchEffect } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
 import CommentComponent from './CommentComponent.vue';
 import ThreadForm from '../forms/ThreadForm.vue';
+import { paginationService } from '../../services/PaginationService';
 
 const props = defineProps({
   parentThreadId: String,
-  nestingLevel: Number,
   refresh: {
     type: Boolean,
     default: false
   }
 });
 
-const route = useRoute();
-
 const subthreads = ref([]);
 
-const getSubthreads = async () => {
-  try {
-    const response = await axios.get(`/api/threads/${props.parentThreadId}/subthreads`, {
-      withCredentials: true
-    });
-
-    subthreads.value = response.data.subthreads;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 onMounted(() => {
-  getSubthreads();
+  paginationService.init(subthreads, `/api/threads/${props.parentThreadId}/subthreads`);
 });
 
-watch(route, () => {
-  getSubthreads();
+onUnmounted(() => {
+  paginationService.destroy();
 });
 
 watchEffect(() => {
-  if (props.refresh) getSubthreads();
+  paginationService.setPath(`/api/threads/${props.parentThreadId}/subthreads`);
+});
+
+watchEffect(() => {
+  if (props.refresh) paginationService.getNewestThreads();
 });
 </script>
 
@@ -80,9 +68,5 @@ watchEffect(() => {
   @media (max-width: 800px) {
     margin: 0 -10px;
   }
-}
-
-.odd-list {
-  background-color: #333;
 }
 </style>

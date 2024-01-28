@@ -17,13 +17,14 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { userStore } from '../../stores/user.store';
 import SearchBar from '../other/SearchBar.vue';
 import NotificationComponent from '../other/NotificationComponent.vue';
 import { socket } from '../../socket';
-import { feedStore } from '../../stores/feed.store';
 import { useRoute } from 'vue-router';
+import { paginationService } from '../../services/PaginationService';
+import { feedService } from '../../services/FeedService';
 
 const route = useRoute();
 
@@ -31,7 +32,7 @@ const user = computed(() => {
   return userStore.userInfo.user;
 });
 
-const count = ref(0);
+const count = feedService.notificationCounter;
 
 socket.on('new-thread', () => {
   count.value++;
@@ -41,7 +42,7 @@ const onLogoClick = () => {
   // we're checking if we stay on the same page not to make
   // two requests on page change (onMounted in FeedPage)
   if (route.fullPath === '/home' && count.value > 0) {
-    feedStore.getFeed();
+    paginationService.getNewestThreads();
   }
   count.value = 0;
 };

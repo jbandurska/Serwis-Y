@@ -1,50 +1,26 @@
 <template>
   <ThreadComponent
-    v-for="thread in threads.value"
+    v-for="thread in threads"
     :key="thread._id"
+    :id="`thread:${thread._id}`"
     :thread="thread"
     :delete-thread="deleteThread"
   />
-  <p v-if="!threads.value?.length">No threads here yet!</p>
+  <p v-if="!threads?.length">No threads here yet!</p>
 </template>
 
 <script setup>
-import { watchEffect } from 'vue';
-import { useRoute } from 'vue-router';
 import ThreadComponent from './ThreadComponent.vue';
-import axios from 'axios';
 
-const props = defineProps({
+defineProps({
   threads: Array
 });
 
-const route = useRoute();
-
-const threads = props.threads;
-
-const getThreads = async () => {
-  const id = route.params.id;
-
-  if (id) {
-    try {
-      const response = await axios.get(`/api/threads/user/${id}`, {
-        withCredentials: true
-      });
-
-      threads.value = response.data.threads;
-    } catch (error) {
-      alert('Something went wrong :(');
-    }
-  } else {
-    threads.value = props.threads;
-  }
-};
+const emit = defineEmits(['delete']);
 
 const deleteThread = (id) => {
-  threads.value = threads.value.filter((t) => t._id !== id);
+  emit('delete', id);
 };
-
-watchEffect(getThreads);
 </script>
 
 <style scoped>

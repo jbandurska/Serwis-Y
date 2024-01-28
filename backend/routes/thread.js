@@ -8,35 +8,55 @@ const router = Router();
 router.use(authGuard);
 
 router.get("/feed", async (req, res) => {
-  const week = 1000 * 60 * 60 * 24 * 7;
-  let lastWeek = new Date();
-  lastWeek -= week;
+  let limit = parseInt(req.query.limit) || 10;
+  if (limit > 20) limit = 20;
 
   const following = req.user.following;
 
+  // default values
+  const query = {
+    user: {
+      $in: following,
+    },
+    isMainThread: true,
+    seenBy: {
+      $ne: req.user._id,
+    },
+  };
+  const sort = {
+    createdAt: -1,
+  };
+
+  const lastCreatedAt = req.query.createdAt;
+  if (lastCreatedAt) {
+    const newer = req.query.newer;
+
+    if (newer === "true") {
+      query.createdAt = {
+        $gt: lastCreatedAt,
+      };
+      sort.createdAt = 1;
+    } else {
+      query.createdAt = {
+        $lt: lastCreatedAt,
+      };
+    }
+  }
+
   try {
-    const threads = await Thread.find({
-      user: {
-        $in: following,
-      },
-      createdAt: {
-        $gt: lastWeek,
-      },
-      isMainThread: true,
-      seenBy: {
-        $ne: req.user._id,
-      },
-    })
+    const threads = await Thread.find(query)
       .populate({
         path: "user",
         select: "login profilePicture",
       })
-      .sort({
-        createdAt: -1,
-      });
+      .sort(sort)
+      .limit(limit)
+      .lean();
+
+    const sortedThreads = threads.sort((a, b) => b.createdAt - a.createdAt);
 
     return res.json({
-      threads,
+      threads: sortedThreads,
     });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
@@ -89,17 +109,59 @@ router.get("/:threadId", async (req, res) => {
 router.get("/:threadId/subthreads", async (req, res) => {
   const threadId = req.params.threadId;
 
+  let limit = parseInt(req.query.limit) || 10;
+  if (limit > 20) limit = 20;
+
+  // default values
+  const query = {};
+  const sort = {
+    createdAt: -1,
+  };
+
+  const lastCreatedAt = req.query.createdAt;
+  if (lastCreatedAt) {
+    const newer = req.query.newer;
+
+    if (newer === "true") {
+      query.createdAt = {
+        $gt: lastCreatedAt,
+      };
+      sort.createdAt = 1;
+    } else {
+      query.createdAt = {
+        $lt: lastCreatedAt,
+      };
+    }
+  }
+
   try {
-    const thread = await Thread.findById(threadId).populate({
-      path: "children",
-      populate: {
-        path: "user",
-        select: "login",
-      },
-    });
+    const thread = await Thread.findOne({
+      _id: threadId,
+    })
+      .populate({
+        path: "children",
+        match: query,
+        populate: {
+          path: "user",
+          select: "login",
+        },
+        options: {
+          sort,
+          limit,
+        },
+      })
+      .lean();
+
+    if (!thread) {
+      return res.status(404).json({ message: "Thread not found" });
+    }
+
+    const sortedThreads = thread.children.sort(
+      (a, b) => b.createdAt - a.createdAt
+    );
 
     return res.json({
-      subthreads: thread.children,
+      threads: sortedThreads,
     });
   } catch (error) {
     console.error(error);
@@ -110,27 +172,48 @@ router.get("/:threadId/subthreads", async (req, res) => {
 router.get("/user/:userId", async (req, res) => {
   const userId = req.params.userId;
 
+  let limit = parseInt(req.query.limit) || 10;
+  if (limit > 20) limit = 20;
+
+  // default values
+  const query = {
+    user: userId,
+    isMainThread: true,
+  };
+  const sort = {
+    createdAt: -1,
+  };
+
+  const lastCreatedAt = req.query.createdAt;
+  if (lastCreatedAt) {
+    const newer = req.query.newer;
+
+    if (newer === "true") {
+      query.createdAt = {
+        $gt: lastCreatedAt,
+      };
+      sort.createdAt = 1;
+    } else {
+      query.createdAt = {
+        $lt: lastCreatedAt,
+      };
+    }
+  }
+
   try {
-    const threads = await Thread.find({
-      user: userId,
-      isMainThread: true,
-    }).sort({
-      createdAt: -1,
-    });
+    const threads = await Thread.find(query)
+      .populate({
+        path: "user",
+        select: "login profilePicture",
+      })
+      .sort(sort)
+      .limit(limit)
+      .lean();
 
-    const user = await User.findById(userId).select({
-      _id: 1,
-      login: 1,
-      profilePicture: 1,
-    });
-
-    const threadsWithUser = threads.map((t) => ({
-      ...t._doc,
-      user,
-    }));
+    const sortedThreads = threads.sort((a, b) => b.createdAt - a.createdAt);
 
     return res.json({
-      threads: threadsWithUser,
+      threads: sortedThreads,
     });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });

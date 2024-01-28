@@ -21,7 +21,7 @@
         path="/api/threads"
         :cb="
           (newThread) => {
-            threads.value.unshift({
+            threads.unshift({
               ...newThread,
               commentsCount: 0,
               user: userStore.userInfo.user || {}
@@ -31,7 +31,7 @@
           }
         "
       />
-      <ThreadList :threads="threads" />
+      <ThreadList :threads="threads" @delete="deleteThread" />
     </div>
   </div>
 </template>
@@ -39,11 +39,12 @@
 <script setup>
 import ThreadForm from '../forms/ThreadForm.vue';
 import ThreadList from '../other/ThreadList.vue';
-import { ref, watchEffect, computed } from 'vue';
+import { ref, watchEffect, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { userStore } from '../../stores/user.store';
 import axios from 'axios';
 import { socket } from '../../socket';
+import { paginationService } from '../../services/PaginationService';
 
 const user = ref(null);
 const threads = ref([]);
@@ -101,8 +102,29 @@ const toggleFollow = async () => {
   }
 };
 
+const deleteThread = (id) => {
+  threads.value = threads.value.filter((t) => t._id !== id);
+};
+
 watchEffect(setIsFollowing);
 watchEffect(fetchUserData);
+
+watch(
+  () => route.params.id,
+  (id) => {
+    threads.value = [];
+    paginationService.setPath(`/api/threads/user/${id}`);
+  }
+);
+
+onMounted(() => {
+  const id = route.params.id;
+  paginationService.init(threads, `/api/threads/user/${id}`);
+});
+
+onUnmounted(() => {
+  paginationService.destroy();
+});
 </script>
 
 <style scoped>

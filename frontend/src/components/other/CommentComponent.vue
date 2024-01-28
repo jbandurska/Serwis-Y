@@ -1,5 +1,5 @@
 <template>
-  <div class="thread" :class="{ odd: nestingLevel % 2 }">
+  <div class="thread">
     <div class="head">
       <router-link v-if="thread.user" :to="`/home/user/${thread.user._id}`">
         {{ thread.user.login }}
@@ -13,25 +13,15 @@
     <p>
       {{ thread.content }}
     </p>
-    <button type="button" @click="toggleThread">
-      {{ isThreadVisible ? 'hide thread' : 'show thread' }}
-    </button>
-    <CommentList
-      v-if="isThreadVisible"
-      :parent-thread-id="thread._id"
-      :nesting-level="nestingLevel + 1"
-    ></CommentList>
   </div>
 </template>
 
 <script setup>
-import CommentList from './CommentList.vue';
 import DeleteThreadBtn from '../buttons/DeleteThreadBtn.vue';
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
-  thread: Object,
-  nestingLevel: Number
+  thread: Object
 });
 
 const date = computed(() => {
@@ -39,12 +29,6 @@ const date = computed(() => {
 
   return '';
 });
-
-const isThreadVisible = ref(false);
-
-const toggleThread = () => {
-  isThreadVisible.value = !isThreadVisible.value;
-};
 </script>
 
 <style scoped>
@@ -82,9 +66,5 @@ p {
     margin-bottom: 5px;
     font-size: 0.9em;
   }
-}
-
-div.odd {
-  background-color: #444;
 }
 </style>

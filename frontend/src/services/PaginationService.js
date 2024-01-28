@@ -7,6 +7,7 @@ const MAX = 30;
 let _threadsArray;
 let _urlPath;
 let _onNewThreads;
+let _lastCreatedAt;
 
 let unsubscribeTop;
 let unsubscribeBottom;
@@ -28,11 +29,15 @@ const init = (arrayRef, path, onNewThreadsCb) => {
   _onNewThreads = onNewThreadsCb;
 
   unsubscribeTop = topOfWindowSub(() => {
-    getThreads(true);
+    if (_threadsArray.value.length) {
+      getThreads(true);
+    }
   });
 
   unsubscribeBottom = bottomOfWindowSub(() => {
-    getThreads(false);
+    if (_threadsArray.value.length) {
+      getThreads(false);
+    }
   });
 
   getThreads();
@@ -40,6 +45,7 @@ const init = (arrayRef, path, onNewThreadsCb) => {
 
 const setPath = (path) => {
   _urlPath = path;
+
   getThreads();
 };
 
@@ -76,6 +82,14 @@ const getThreads = async (newer = false) => {
   const lastCreatedAt = newer
     ? _threadsArray.value.at(0)?.createdAt
     : _threadsArray.value.at(-1)?.createdAt;
+
+  if (lastCreatedAt && !newer && lastCreatedAt === _lastCreatedAt) {
+    // for cases when onscroll event gets fired twice when
+    // is less than 1 px away from the bottom of the screen
+    return;
+  }
+
+  _lastCreatedAt = lastCreatedAt;
 
   const id = _threadsArray.value.at(0)?._id;
 

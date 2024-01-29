@@ -9,6 +9,7 @@ import { configurePassport } from "./config/passport.js";
 import { authRouter, threadRouter, userRouter } from "./routes/index.js";
 import fileUpload from "express-fileupload";
 import { configureSocketIo } from "./config/socket.js";
+import { errorMiddleware } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
 const port = process.env.PORT;
@@ -35,6 +36,8 @@ const passport = configurePassport(app);
 app.use("/api", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/threads", threadRouter);
+
+app.use(errorMiddleware);
 
 const key = fs.readFileSync("key.pem");
 const cert = fs.readFileSync("cert.pem");

@@ -2,6 +2,9 @@ import { Router } from "express";
 import User from "../models/user.model.js";
 import Thread from "../models/thread.model.js";
 import { authGuard } from "../middleware/authGuard.js";
+import { findSubthreads } from "./threads/findSubthreads.js";
+import { findSubthreadsAround } from "./threads/findSubthreadsAround.js";
+import { sortThreadsByTime } from "./threads/sortThreadsByTime.js";
 
 const router = Router();
 
@@ -24,21 +27,21 @@ router.get("/feed", async (req, res) => {
     },
   };
   const sort = {
-    createdAt: -1,
+    _id: -1,
   };
 
-  const lastCreatedAt = req.query.createdAt;
-  if (lastCreatedAt) {
-    const newer = req.query.newer;
+  const lastThreadId = req.query.threadId;
+  if (lastThreadId) {
+    const newer = req.query.time_direction === "newer";
 
-    if (newer === "true") {
-      query.createdAt = {
-        $gt: lastCreatedAt,
+    if (newer) {
+      query._id = {
+        $gt: lastThreadId,
       };
-      sort.createdAt = 1;
+      sort._id = 1;
     } else {
-      query.createdAt = {
-        $lt: lastCreatedAt,
+      query._id = {
+        $lt: lastThreadId,
       };
     }
   }
@@ -53,7 +56,7 @@ router.get("/feed", async (req, res) => {
       .limit(limit)
       .lean();
 
-    const sortedThreads = threads.sort((a, b) => b.createdAt - a.createdAt);
+    const sortedThreads = sortThreadsByTime(threads);
 
     return res.json({
       threads: sortedThreads,
@@ -106,66 +109,34 @@ router.get("/:threadId", async (req, res) => {
   }
 });
 
-router.get("/:threadId/subthreads", async (req, res) => {
+router.get("/:threadId/subthreads", async (req, res, next) => {
   const threadId = req.params.threadId;
+  const subthreadId = req.query.threadId;
+  const time_direction = req.query.time_direction;
 
   let limit = parseInt(req.query.limit) || 10;
   if (limit > 20) limit = 20;
 
-  // default values
-  const query = {};
-  const sort = {
-    createdAt: -1,
-  };
-
-  const lastCreatedAt = req.query.createdAt;
-  if (lastCreatedAt) {
-    const newer = req.query.newer;
-
-    if (newer === "true") {
-      query.createdAt = {
-        $gt: lastCreatedAt,
-      };
-      sort.createdAt = 1;
-    } else {
-      query.createdAt = {
-        $lt: lastCreatedAt,
-      };
-    }
-  }
-
+  let threads;
   try {
-    const thread = await Thread.findOne({
-      _id: threadId,
-    })
-      .populate({
-        path: "children",
-        match: query,
-        populate: {
-          path: "user",
-          select: "login",
-        },
-        options: {
-          sort,
-          limit,
-        },
-      })
-      .lean();
-
-    if (!thread) {
-      return res.status(404).json({ message: "Thread not found" });
+    if (time_direction === "around") {
+      threads = await findSubthreadsAround(threadId, subthreadId, limit);
+    } else {
+      threads = await findSubthreads(
+        threadId,
+        subthreadId,
+        time_direction,
+        limit
+      );
     }
 
-    const sortedThreads = thread.children.sort(
-      (a, b) => b.createdAt - a.createdAt
-    );
+    const sortedThreads = sortThreadsByTime(threads);
 
     return res.json({
       threads: sortedThreads,
     });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+  } catch (err) {
+    return next(err);
   }
 });
 
@@ -181,21 +152,21 @@ router.get("/user/:userId", async (req, res) => {
     isMainThread: true,
   };
   const sort = {
-    createdAt: -1,
+    _id: -1,
   };
 
-  const lastCreatedAt = req.query.createdAt;
-  if (lastCreatedAt) {
-    const newer = req.query.newer;
+  const lastThreadId = req.query.threadId;
+  if (lastThreadId) {
+    const newer = req.query.time_direction === "newer";
 
-    if (newer === "true") {
-      query.createdAt = {
-        $gt: lastCreatedAt,
+    if (newer) {
+      query._id = {
+        $gt: lastThreadId,
       };
-      sort.createdAt = 1;
+      sort._id = 1;
     } else {
-      query.createdAt = {
-        $lt: lastCreatedAt,
+      query._id = {
+        $lt: lastThreadId,
       };
     }
   }
@@ -210,7 +181,7 @@ router.get("/user/:userId", async (req, res) => {
       .limit(limit)
       .lean();
 
-    const sortedThreads = threads.sort((a, b) => b.createdAt - a.createdAt);
+    const sortedThreads = sortThreadsByTime(threads);
 
     return res.json({
       threads: sortedThreads,

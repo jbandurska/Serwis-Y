@@ -22,7 +22,7 @@
 
 <script setup>
 import { socket } from '../../socket';
-import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
+import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
 import CommentComponent from './CommentComponent.vue';
 import ThreadForm from '../forms/ThreadForm.vue';
 import { paginationService } from '../../services/PaginationService';
@@ -49,9 +49,14 @@ onUnmounted(() => {
   paginationService.destroy();
 });
 
-watchEffect(() => {
-  paginationService.setPath(`/api/threads/${props.parentThreadId}/subthreads`);
-});
+watch(
+  () => props.parentThreadId,
+  () => {
+    subthreads.value = [];
+    console.log('changing page');
+    paginationService.setPath(`/api/threads/${props.parentThreadId}/subthreads`);
+  }
+);
 
 watchEffect(() => {
   if (props.refresh) paginationService.getNewestThreads();

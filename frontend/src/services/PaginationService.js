@@ -2,12 +2,12 @@ import axios from 'axios';
 import { topOfWindowSub } from '../utils/topOfWindowSub';
 import { bottomOfWindowSub } from '../utils/bottomOfWindowSub';
 
-const MAX = 30;
+const MAX = 15;
 
 let _threadsArray;
 let _urlPath;
 let _onNewThreads;
-let _lastCreatedAt;
+let _lastThreadId;
 
 let unsubscribeTop;
 let unsubscribeBottom;
@@ -43,10 +43,10 @@ const init = (arrayRef, path, onNewThreadsCb) => {
   getThreads();
 };
 
-const setPath = (path) => {
+const setPath = (path, refresh = true) => {
   _urlPath = path;
 
-  getThreads();
+  if (refresh) getThreads();
 };
 
 const destroy = () => {
@@ -56,6 +56,30 @@ const destroy = () => {
 
   unsubscribeTop();
   unsubscribeBottom();
+};
+
+const getThreadsAround = async (threadId) => {
+  if (!_threadsArray || !_urlPath || !threadId) {
+    return new Error('Threads array, threadId and url path must be provided!');
+  }
+
+  try {
+    const response = await axios.get(_urlPath, {
+      withCredentials: true,
+      params: {
+        threadId,
+        time_direction: 'around'
+      }
+    });
+    const threads = response.data.threads;
+
+    if (threads.length > 0) {
+      _threadsArray.value.push(...threads);
+      _threadsArray.value = _threadsArray.value.slice(-MAX);
+    }
+  } catch (error) {
+    alert('Something went wrong :(');
+  }
 };
 
 const getNewestThreads = async () => {
@@ -79,17 +103,15 @@ const getThreads = async (newer = false) => {
     return new Error('Threads array and url path must be provided!');
   }
 
-  const lastCreatedAt = newer
-    ? _threadsArray.value.at(0)?.createdAt
-    : _threadsArray.value.at(-1)?.createdAt;
+  const lastThreadId = newer ? _threadsArray.value.at(0)?._id : _threadsArray.value.at(-1)?._id;
 
-  if (lastCreatedAt && !newer && lastCreatedAt === _lastCreatedAt) {
+  if (lastThreadId && !newer && lastThreadId === _lastThreadId) {
     // for cases when onscroll event gets fired twice when
     // is less than 1 px away from the bottom of the screen
     return;
   }
 
-  _lastCreatedAt = lastCreatedAt;
+  _lastThreadId = lastThreadId;
 
   const id = _threadsArray.value.at(0)?._id;
 
@@ -97,8 +119,8 @@ const getThreads = async (newer = false) => {
     const response = await axios.get(_urlPath, {
       withCredentials: true,
       params: {
-        createdAt: lastCreatedAt,
-        newer
+        threadId: lastThreadId,
+        time_direction: newer ? 'newer' : 'older'
       }
     });
     const threads = response.data.threads;
@@ -122,5 +144,6 @@ export const paginationService = {
   init,
   setPath,
   destroy,
-  getNewestThreads
+  getNewestThreads,
+  getThreadsAround
 };

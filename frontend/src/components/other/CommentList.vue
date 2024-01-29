@@ -6,7 +6,7 @@
       :cb="
         (newThread) => {
           socket.emit('new-subthread', parentThreadId);
-          subthreads.push(newThread);
+          subthreads.unshift(newThread);
         }
       "
     ></ThreadForm>
@@ -15,7 +15,7 @@
       :key="subthread._id"
       :id="`thread:${subthread._id}`"
       :thread="subthread"
-      @delete="paginationService.getNewestThreads()"
+      @delete="deleteThread(subthread._id)"
     ></CommentComponent>
   </div>
 </template>
@@ -36,6 +36,10 @@ const props = defineProps({
 });
 
 const subthreads = ref([]);
+
+const deleteThread = (id) => {
+  subthreads.value = subthreads.value.filter((t) => t._id !== id);
+};
 
 onMounted(() => {
   paginationService.init(subthreads, `/api/threads/${props.parentThreadId}/subthreads`);

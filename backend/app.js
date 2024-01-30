@@ -11,6 +11,11 @@ import fileUpload from "express-fileupload";
 import { configureSocketIo } from "./config/socket.js";
 import { errorMiddleware } from "./middleware/errorMiddleware.js";
 
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 dotenv.config();
 const port = process.env.PORT;
 
@@ -38,6 +43,11 @@ app.use("/api/users", userRouter);
 app.use("/api/threads", threadRouter);
 
 app.use(errorMiddleware);
+
+app.use(express.static(path.join(__dirname, "dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 const key = fs.readFileSync("key.pem");
 const cert = fs.readFileSync("cert.pem");

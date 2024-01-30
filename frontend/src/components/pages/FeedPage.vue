@@ -11,11 +11,16 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import ThreadList from '../other/ThreadList.vue';
 import { paginationService } from '../../services/PaginationService';
 import { feedService } from '../../services/FeedService';
+import { pathService } from '../../services/PathService';
+import { useRoute } from 'vue-router';
 
 const threads = ref([]);
 
+const route = useRoute();
+
 onMounted(() => {
   paginationService.init(threads, '/api/threads/feed', feedService.onNewThreads);
+  pathService.lastSignificantPage.value = route.fullPath;
 });
 
 onUnmounted(() => {

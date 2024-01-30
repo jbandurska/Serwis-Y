@@ -7,10 +7,19 @@
 <script setup>
 import { useRouter } from 'vue-router';
 
+const props = defineProps({
+  url: String
+});
+
 const router = useRouter();
 
 const goBack = () => {
-  router.back();
+  console.log(props.url);
+  if (props.url) {
+    router.push(props.url);
+  } else {
+    router.back();
+  }
 };
 </script>
 

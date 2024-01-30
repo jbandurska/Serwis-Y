@@ -12,7 +12,7 @@
       Click to see new comments
     </button>
     <div v-if="thread" class="thread box" :class="{ first: isThreadView }">
-      <GoBackBtn v-if="isThreadView" class="go-back" />
+      <GoBackBtn v-if="isThreadView" class="go-back" :url="goBackUrl" />
       <router-link
         v-if="thread.parentId"
         :to="`/home/threads/${thread.parentId}?around=${thread._id}`"
@@ -54,6 +54,7 @@ import QuoteThreadBtn from '../buttons/QuoteThreadBtn.vue';
 import GoBackBtn from '../buttons/GoBackBtn.vue';
 import { socket } from '../../socket';
 import UserHeader from './UserHeader.vue';
+import { pathService } from '../../services/PathService';
 
 const route = useRoute();
 const router = useRouter();
@@ -89,8 +90,18 @@ socket.on('new-subthread', () => {
   areNewThreads.value = true;
 });
 
+const goBackUrl = computed(() => {
+  if (props.thread.parentId) {
+    return `/home/threads/${props.thread.parentId}?around=${props.thread._id}`;
+  } else {
+    return pathService.lastSignificantPage.value;
+  }
+});
+
 const deleteThread = () => {
-  if (route.path.includes('thread')) {
+  if (route.path.includes('thread') && goBackUrl.value) {
+    router.push(goBackUrl.value);
+  } else if (route.path.includes('thread')) {
     router.back();
   } else {
     props.deleteThread(props.thread._id);

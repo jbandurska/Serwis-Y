@@ -45,6 +45,7 @@ import { userStore } from '../../stores/user.store';
 import axios from 'axios';
 import { socket } from '../../socket';
 import { paginationService } from '../../services/PaginationService';
+import { pathService } from '../../services/PathService';
 
 const user = ref(null);
 const threads = ref([]);
@@ -114,12 +115,14 @@ watch(
   (id) => {
     threads.value = [];
     paginationService.setPath(`/api/threads/user/${id}`);
+    pathService.lastSignificantPage.value = route.fullPath;
   }
 );
 
 onMounted(() => {
   const id = route.params.id;
   paginationService.init(threads, `/api/threads/user/${id}`);
+  pathService.lastSignificantPage.value = route.fullPath;
 });
 
 onUnmounted(() => {

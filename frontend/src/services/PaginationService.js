@@ -17,9 +17,6 @@ const scrollCurrentIntoView = (id) => {
     setTimeout(() => {
       const currentThread = document.getElementById(`thread:${id}`);
 
-      console.log(`thread:${id}`);
-      console.log(currentThread);
-
       if (currentThread) currentThread.scrollIntoView({ block: 'center', inline: 'center' });
     });
   }

@@ -8,19 +8,22 @@ export const findSubthreadsAround = async (threadId, subthreadId, limit) => {
     );
   }
 
-  const halfOfLimit = Math.floor(limit / 2);
+  // in case limit is uneven
+  const halfOfLimitCeil = Math.ceil(limit / 2);
+  const halfOfLimitFloor = Math.floor(limit / 2);
 
   const newer = await findSubthreads(
     threadId,
     subthreadId,
     "newer",
-    halfOfLimit
+    halfOfLimitCeil,
+    true
   );
   const older = await findSubthreads(
     threadId,
     subthreadId,
     "older",
-    halfOfLimit
+    halfOfLimitFloor
   );
 
   return newer.concat(older);

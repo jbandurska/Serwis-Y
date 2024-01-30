@@ -5,9 +5,13 @@ export const findSubthreads = async (
   threadId,
   subthreadId,
   time_direction,
-  limit
+  limit,
+  includeEqual = false
 ) => {
   const newer = time_direction === "newer";
+
+  let matchIdKey = newer ? "$gt" : "$lt";
+  if (includeEqual) matchIdKey += "e";
 
   const thread = await Thread.findOne({
     _id: threadId,
@@ -16,13 +20,9 @@ export const findSubthreads = async (
       path: "children",
       match: subthreadId
         ? {
-            _id: newer
-              ? {
-                  $gt: subthreadId,
-                }
-              : {
-                  $lt: subthreadId,
-                },
+            _id: {
+              [matchIdKey]: subthreadId,
+            },
           }
         : {},
       populate: {
@@ -37,8 +37,6 @@ export const findSubthreads = async (
       },
     })
     .lean();
-
-  console.log(thread);
 
   if (!thread)
     throw new NotFoundError(`Thread with id ${threadId} was not found`);

@@ -13,7 +13,10 @@
     </button>
     <div v-if="thread" class="thread box" :class="{ first: isThreadView }">
       <GoBackBtn v-if="isThreadView" class="go-back" />
-      <router-link v-if="thread.parentId" :to="`/home/threads/${thread.parentId}`">
+      <router-link
+        v-if="thread.parentId"
+        :to="`/home/threads/${thread.parentId}?around=${thread._id}`"
+      >
         parent thread
       </router-link>
       <div class="head flex">

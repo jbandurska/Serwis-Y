@@ -26,6 +26,7 @@ import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
 import CommentComponent from './CommentComponent.vue';
 import ThreadForm from '../forms/ThreadForm.vue';
 import { paginationService } from '../../services/PaginationService';
+import { useRoute } from 'vue-router';
 
 const props = defineProps({
   parentThreadId: String,
@@ -34,6 +35,8 @@ const props = defineProps({
     default: false
   }
 });
+
+const route = useRoute();
 
 const subthreads = ref([]);
 
@@ -53,8 +56,14 @@ watch(
   () => props.parentThreadId,
   () => {
     subthreads.value = [];
-    console.log('changing page');
-    paginationService.setPath(`/api/threads/${props.parentThreadId}/subthreads`);
+    paginationService.setPath(`/api/threads/${props.parentThreadId}/subthreads`, false);
+
+    const around = route.query.around;
+    if (around) {
+      paginationService.getThreadsAround(around);
+    } else {
+      paginationService.getNewestThreads();
+    }
   }
 );
 

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { topOfWindowSub } from '../utils/topOfWindowSub';
 import { bottomOfWindowSub } from '../utils/bottomOfWindowSub';
 
-const MAX = 15;
+const MAX = 30;
 
 let _threadsArray;
 let _urlPath;
@@ -14,12 +14,14 @@ let unsubscribeBottom;
 
 const scrollCurrentIntoView = (id) => {
   if (id) {
-    const currentThread = document.getElementById(`thread:${id}`);
+    setTimeout(() => {
+      const currentThread = document.getElementById(`thread:${id}`);
 
-    if (currentThread)
-      setTimeout(() => {
-        currentThread.scrollIntoView({ block: 'center', inline: 'center' });
-      });
+      console.log(`thread:${id}`);
+      console.log(currentThread);
+
+      if (currentThread) currentThread.scrollIntoView({ block: 'center', inline: 'center' });
+    });
   }
 };
 
@@ -76,6 +78,7 @@ const getThreadsAround = async (threadId) => {
     if (threads.length > 0) {
       _threadsArray.value.push(...threads);
       _threadsArray.value = _threadsArray.value.slice(-MAX);
+      scrollCurrentIntoView(threadId);
     }
   } catch (error) {
     alert('Something went wrong :(');

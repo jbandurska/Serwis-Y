@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Serwis-Y
-=======
 # Service 'Y'
 
 A twitter-like application made for a university subject.
@@ -61,4 +58,3 @@ PASSPHRASE
 SECRET
 FRONTEND_URL
 ```
->>>>>>> abb8df7 (General refactor)

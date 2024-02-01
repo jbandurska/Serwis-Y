@@ -34,18 +34,21 @@
         {{ thread.content }}
       </p>
 
-      <p class="comments small">
-        {{ thread.seenBy?.length }} views | {{ thread.children?.length }} comments
-      </p>
+      <p class="comments small">{{ thread.seenBy?.length }} views | {{ comments }} comments</p>
 
-      <CommentList v-if="isThreadView" :parent-thread-id="threadId" :refresh="refresh" />
+      <CommentList
+        v-if="isThreadView"
+        :parent-thread-id="threadId"
+        :refresh="refresh"
+        @new-comment="newComment"
+      />
       <router-link v-else :to="`/home/threads/${thread._id}`"> see thread </router-link>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watchEffect } from 'vue';
+import { ref, computed, watchEffect, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CommentList from './CommentList.vue';
 import QuoteComponent from './QuoteComponent.vue';
@@ -66,6 +69,13 @@ const props = defineProps({
   thread: Object,
   deleteThread: Function
 });
+
+const comments = ref(props.thread.children?.length ?? 0);
+
+const newComment = () => {
+  comments.value++;
+  console.log('newCOmment');
+};
 
 const areNewThreads = ref(false);
 const refresh = ref(false);
@@ -88,6 +98,7 @@ socket.on('new-subthread', () => {
   // after clicking the refresh button
   refresh.value = false;
   areNewThreads.value = true;
+  comments.value += 1;
 });
 
 const goBackUrl = computed(() => {
@@ -113,6 +124,15 @@ watchEffect(() => {
     socket.emit('thread-change', threadId.value);
   }
 });
+
+watch(
+  () => {
+    props.thread;
+  },
+  () => {
+    comments.value = props.thread.children?.length ?? 0;
+  }
+);
 </script>
 
 <style scoped>
@@ -133,7 +153,6 @@ watchEffect(() => {
 .wrapper {
   position: relative;
   .go-back {
-    background-color: var(--main);
     padding: 5px;
     margin: 0 auto 10px 0;
   }

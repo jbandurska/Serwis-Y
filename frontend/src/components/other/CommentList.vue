@@ -7,6 +7,7 @@
         (newThread) => {
           socket.emit('new-subthread', parentThreadId);
           subthreads.unshift(newThread);
+          emit('newComment');
         }
       "
     ></ThreadForm>
@@ -35,6 +36,8 @@ const props = defineProps({
     default: false
   }
 });
+
+const emit = defineEmits(['newComment']);
 
 const route = useRoute();
 
